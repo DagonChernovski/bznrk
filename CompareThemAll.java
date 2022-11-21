@@ -1,7 +1,7 @@
 import java.lang.String;
 import java.lang.Math;
 
-public class Comparethemall {
+public class CompareThemAll {
     public class item {
         public int key;
         char[50] password;
