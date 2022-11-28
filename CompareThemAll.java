@@ -8,14 +8,15 @@ import java.util.Scanner;
 public class Main {
     public static class item {
         Integer key=new Integer(0);
-        char[] password =new char[50];
-        public item() {this.key=0; this.password=new char[50];}
-        public void setItem(Integer key, char[] password) {
+        Character[] password =new Character[50];
+        public item() {this.key=0; this.password=new Character[50];}
+        public void setItem(Integer key, Character[] password) {
             this.key=key; this.password=password;
             //for (int i=0; i<50; i++) System.out.println("| "+this.password[i]+" | ");
         }
         public int getKey() {return this.key;}
-        public char[] getPass() {char[] ret=new char[50]; for (int i = 0; i<50; i++) ret [i]=password[i]; return ret;}
+        public Character[] getPass() {return this.password;}
+        //{Character[] c=new Character[50]; for (int i = 0; i<50; i++) ret [i]=password[i]; return ret;}
     }
     void InsertSort(item a[]) {
         int j, n=10000;
@@ -65,12 +66,12 @@ public class Main {
         item sorted[]=new item[10000];
         item random[]=new item[10000];
         item opposite[]=new item[10000];
-        char[] pass=new char[50];
+        Character[] pass=new Character[50];
         //СТАДИЯ 1. ВВОД
         Random ran=new Random();
         for (int i=0; i<10000; i++)
         {
-            for (int j=0; j<50; j++) {pass[j] = (char)(ran.nextInt(79) + 43); }
+            for (int j=0; j<50; j++) {pass[j] = Int(ran.nextInt(79) + 43)}
             sorted[i] = new item();
             opposite[i] = new item();
             random[i]=new item();
@@ -84,8 +85,9 @@ public class Main {
         }
         //СТАДИЯ 2. СОРТИРОВКА
         System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
-        System.out.println(opposite[777].getKey()+" "+opposite[777].getPass());
+        System.out.println(opposite[9334].getKey()+" "+opposite[9334].getPass());
         opposite=BubbleSort(opposite);
         System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
+        System.out.println(opposite[9334].getKey()+" "+opposite[9334].getPass());
     }
 }
