@@ -1,10 +1,16 @@
+package com.company;
+
 import java.lang.String;
 import java.lang.Math;
 
-public class CompareThemAll {
-    public class item {
-        public int key;
-        public char password[]=new char[50];
+public class Main {
+    public static class item {
+        Integer key=new Integer(0);
+        char[] password =new char[50];
+        public item() {this.key=0; this.password=new char[50];}
+        public void setItem(Integer key, char[] password) {
+            this.key=key; this.password=password;
+        }
     }
     void InsertSort(item a[]) {
         int j, n=10000;
@@ -50,16 +56,18 @@ public class CompareThemAll {
         item sorted[]=new item[10000];
         item random[]=new item[10000];
         item opposite[]=new item[10000];
+        char[] pass=new char[50];
         //СТАДИЯ 1. ВВОД
         for (int i=0; i<10000; i++)
         {
-            sorted[i].key=i;
+            for (int j=0; j<50; j++) {pass[j] = (char) (79*Math.random() + 43); }
+            sorted[i] = new item();
+            opposite[i]=new item();
+            random[i]=new item();
+            sorted[i].setItem(i, pass);
+            opposite[i].setItem(10000-i, pass);
+            random[i].setItem((int)(Math.random()*100000), pass);
             System.out.println("works"+i);
-            opposite[i].key=10000-i;
-            random[i].key=(int)(Math.random()*100000);
-            for (int j=0; j<50; j++) {sorted[i].password[j] = (char) (79*Math.random() + 43); }
-            opposite[i].password=sorted[i].password;
-            random[i].password=sorted[i].password;
         }
         //СТАДИЯ 2. СОРТИРОВКА
         System.out.println(opposite[1].key+" "+opposite[1].password);
