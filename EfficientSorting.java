@@ -46,10 +46,14 @@ public class EfficientSorting {
         for (int i = 1; i < n; i++)
             for (int j = n-1; j > i; j--)
                 if (a[j].key < a[j-1].key) {
+                    //System.out.print("Switches ["+(j-1)+']'+a[j-1].getKey()+" and "+a[j].getKey());
+                    //if (Math.abs(5000-j)<=4995)
+                    //    for (int ii=-4; ii<5; ii++)
+                   //         System.out.print(a[j+ii].getKey()+" ");
+                   // System.out.println("    key+-4: "+j);
                     x = a[j - 1];
                     a[j - 1] = a[j];
                     a[j] = x;
-                    //System.out.println("Switches : "+a[j-1]+" and "+a[j]);
                 }
         return a;
     }
