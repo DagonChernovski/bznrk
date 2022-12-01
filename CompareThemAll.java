@@ -39,21 +39,30 @@ public class CompareThemAll extends EfficientSorting {
         System.arraycopy(opposite, 0, opposite_, 0, 10000);
         //СТАДИЯ 2. СОРТИРОВКА
         long startTime, endTime;
-        long[][] timeElapsed=new long[4][3];
-
+        long[][] timeElapsed=new long[5][3];
+        System.out.println("Сортировка вставками:\n");
+        startTime=System.nanoTime();
+        InsertSort(sorted);
+        endTime=System.nanoTime();
+        timeElapsed[2][0]=endTime-startTime;
+        startTime=System.nanoTime();
+        InsertSort(random);
+        endTime=System.nanoTime();
+        timeElapsed[2][1]=endTime-startTime;
+        startTime=System.nanoTime();
+        InsertSort(opposite);
+        endTime=System.nanoTime();
+        timeElapsed[2][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
         System.out.println("Cортировка выбором:\n");
         startTime=System.nanoTime();
         SelectionSort(sorted);
         endTime=System.nanoTime();
         timeElapsed[2][0]=endTime-startTime;
-        System.out.println(random[666].getKey()+" "+random[666].getPass());
-        System.out.println(random[9334].getKey()+" "+random[9334].getPass());
         startTime=System.nanoTime();
         SelectionSort(random);
         endTime=System.nanoTime();
         timeElapsed[2][1]=endTime-startTime;
-        System.out.println(random[666].getKey()+" "+random[666].getPass());
-        System.out.println(random[9334].getKey()+" "+random[9334].getPass());
         startTime=System.nanoTime();
         SelectionSort(opposite);
         endTime=System.nanoTime();
@@ -62,9 +71,6 @@ public class CompareThemAll extends EfficientSorting {
         System.arraycopy(random_, 0, random, 0, 10000);
         System.arraycopy(opposite_, 0, opposite, 0, 10000);
         System.out.println("Пузырьковая сортировка:\n");
-
-        System.out.println(random[10].getKey()+" "+random[10].getPass());
-        System.out.println(random[9990].getKey()+" "+random[9990].getPass());
         //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
         startTime=System.nanoTime();
         BubbleSort(random);
@@ -75,16 +81,10 @@ public class CompareThemAll extends EfficientSorting {
         endTime=System.nanoTime();
         timeElapsed[2][0]=endTime-startTime;
         //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
-        System.out.println(random[10].getKey()+" "+random[10].getPass());
-        System.out.println(random[9990].getKey()+" "+random[9990].getPass());
-        System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
-        System.out.println(opposite[9334].getKey()+" "+opposite[9334].getPass());
         startTime=System.nanoTime();
         BubbleSort(opposite);
         endTime=System.nanoTime();
         timeElapsed[2][2]=endTime-startTime;
-        System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
-        System.out.println(opposite[9334].getKey()+" "+opposite[9334].getPass());
         for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
         System.arraycopy(random_, 0, random, 0, 10000);
         System.arraycopy(opposite_, 0, opposite, 0, 10000);
