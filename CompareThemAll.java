@@ -24,11 +24,11 @@ public class CompareThemAll extends EfficientSorting {
             sorted[i].setItem(i, pass);
             opposite[i].setItem(10000-i, pass);
             random[i].setItem((int)(Math.random()*10000), pass);
-            System.out.print("works    "+i+"   ");
+            //System.out.print("works    "+i+"   ");
 
-            for (int j=0; j<50; j++) System.out.print(pass[j]);
+            //for (int j=0; j<50; j++) System.out.print(pass[j]);
             //if (pass==sorted[i-1].getPass());
-            System.out.println();
+            //System.out.println();
         }
         //СТАДИЯ 1.5. Создадим копии массивов
         item sorted_[]=new item[10000];
@@ -63,16 +63,18 @@ public class CompareThemAll extends EfficientSorting {
         System.arraycopy(opposite_, 0, opposite, 0, 10000);
         System.out.println("Пузырьковая сортировка:\n");
 
-        startTime=System.nanoTime();
-        BubbleSort(sorted);
-        endTime=System.nanoTime();
-        timeElapsed[2][0]=endTime-startTime;
         System.out.println(random[10].getKey()+" "+random[10].getPass());
         System.out.println(random[9990].getKey()+" "+random[9990].getPass());
+        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
         startTime=System.nanoTime();
         BubbleSort(random);
         endTime=System.nanoTime();
         timeElapsed[2][1]=endTime-startTime;
+        startTime=System.nanoTime();
+        BubbleSort(sorted);
+        endTime=System.nanoTime();
+        timeElapsed[2][0]=endTime-startTime;
+        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
         System.out.println(random[10].getKey()+" "+random[10].getPass());
         System.out.println(random[9990].getKey()+" "+random[9990].getPass());
         System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
