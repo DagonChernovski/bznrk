@@ -1,67 +1,13 @@
-package com.company;
+//package com.company;
 
 import java.lang.String;
 import java.lang.Math;
 import java.util.Random;
-import java.util.Scanner;
+//import java.util.Arrays;
+//import java.util.Scanner;
 
-public class Main {
-    public static class item {
-        Integer key=new Integer(0);
-        Character[] password =new Character[50];
-        public item() {this.key=0; this.password=new Character[50];}
-        public void setItem(Integer key, Character[] password) {
-            this.key=key; this.password=password;
-            //for (int i=0; i<50; i++) System.out.println("| "+this.password[i]+" | ");
-        }
-        public int getKey() {return this.key;}
-        public Character[] getPass() {return this.password;}
-        //{Character[] c=new Character[50]; for (int i = 0; i<50; i++) ret [i]=password[i]; return ret;}
-    }
-    void InsertSort(item a[]) {
-        int j, n=10000;
-        item x;
-        for (int i=2; i<n; i++) {
-            x=a[i]; a[0]=x; j=i-1;
-            while (x.key<a[j].key) {
-                a[j+1]=a[j];
-                j=j-1;
-            }
-            a[j+1]=x;
-        }
-    };
-    void SelectionSort(item a[]) {
-        int j, k, n=10000;
-        item x;
-        for (int i=1; i<n-1; i++) {
-            k=i; x=a[i];
-            for (j=i+1; j<n; j++) {
-                if (a[j].key<x.key) {k=j; x=a[j];}
-                a[k]=a[i]; a[i]=x;
-            }
-        }
-    }
-    static item[] BubbleSort(item a[]) {
-        item x;
-        int n=10000;
-        for (int i = 1; i < n; i++)
-            for (int j = n-1; j > i; j--)
-                if (a[j].key < a[j-1].key) {
-                    x = a[j - 1];
-                    a[j - 1] = a[j];
-                    a[j] = x;
-                    //System.out.println("Switches : "+a[j-1]+" and "+a[j]);
-                }
-        return a;
-    }
-    void ShakerSort(item a) {}
-    /*void QuickSort(item a, int l, int r) {
-        int i=l,j=r;
-        item b;
-        item x=new item();
-        x.setItem((a[l+r].getKey()),a.getPass());
-        while (a[i].key<x.key) {i=i+1;}
-    }*/
+public class CompareThemAll extends EfficientSorting {
+
     public static void main(String[] args) {
         item sorted[]=new item[10000];
         item random[]=new item[10000];
@@ -71,23 +17,77 @@ public class Main {
         Random ran=new Random();
         for (int i=0; i<10000; i++)
         {
-            for (int j=0; j<50; j++) {pass[j] = Int(ran.nextInt(79) + 43)}
+            for (int j=0; j<50; j++) {pass[j] = (char)(ran.nextInt(79) + 43);}
             sorted[i] = new item();
             opposite[i] = new item();
             random[i]=new item();
             sorted[i].setItem(i, pass);
             opposite[i].setItem(10000-i, pass);
-            random[i].setItem((int)(Math.random()*100000), pass);
+            random[i].setItem((int)(Math.random()*10000), pass);
             System.out.print("works    "+i+"   ");
+
             for (int j=0; j<50; j++) System.out.print(pass[j]);
             //if (pass==sorted[i-1].getPass());
             System.out.println();
         }
+        //СТАДИЯ 1.5. Создадим копии массивов
+        item sorted_[]=new item[10000];
+        item random_[]=new item[10000];
+        item opposite_[]=new item[10000];
+        System.arraycopy(sorted, 0, sorted_, 0, 10000);
+        System.arraycopy(random, 0, random_, 0, 10000);
+        System.arraycopy(opposite, 0, opposite_, 0, 10000);
         //СТАДИЯ 2. СОРТИРОВКА
+        long startTime, endTime;
+        long[][] timeElapsed=new long[4][3];
+
+        System.out.println("Cортировка выбором:\n");
+        startTime=System.nanoTime();
+        SelectionSort(sorted);
+        endTime=System.nanoTime();
+        timeElapsed[2][0]=endTime-startTime;
+        System.out.println(random[666].getKey()+" "+random[666].getPass());
+        System.out.println(random[9334].getKey()+" "+random[9334].getPass());
+        startTime=System.nanoTime();
+        SelectionSort(random);
+        endTime=System.nanoTime();
+        timeElapsed[2][1]=endTime-startTime;
+        System.out.println(random[666].getKey()+" "+random[666].getPass());
+        System.out.println(random[9334].getKey()+" "+random[9334].getPass());
+        startTime=System.nanoTime();
+        SelectionSort(opposite);
+        endTime=System.nanoTime();
+        timeElapsed[2][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
+        System.arraycopy(random_, 0, random, 0, 10000);
+        System.arraycopy(opposite_, 0, opposite, 0, 10000);
+        System.out.println("Пузырьковая сортировка:\n");
+
+        startTime=System.nanoTime();
+        BubbleSort(sorted);
+        endTime=System.nanoTime();
+        timeElapsed[2][0]=endTime-startTime;
+        System.out.println(random[10].getKey()+" "+random[10].getPass());
+        System.out.println(random[9990].getKey()+" "+random[9990].getPass());
+        startTime=System.nanoTime();
+        BubbleSort(random);
+        endTime=System.nanoTime();
+        timeElapsed[2][1]=endTime-startTime;
+        System.out.println(random[10].getKey()+" "+random[10].getPass());
+        System.out.println(random[9990].getKey()+" "+random[9990].getPass());
         System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
         System.out.println(opposite[9334].getKey()+" "+opposite[9334].getPass());
-        opposite=BubbleSort(opposite);
+        startTime=System.nanoTime();
+        BubbleSort(opposite);
+        endTime=System.nanoTime();
+        timeElapsed[2][2]=endTime-startTime;
         System.out.println(opposite[666].getKey()+" "+opposite[666].getPass());
         System.out.println(opposite[9334].getKey()+" "+opposite[9334].getPass());
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
+        System.arraycopy(random_, 0, random, 0, 10000);
+        System.arraycopy(opposite_, 0, opposite, 0, 10000);
+
+
     }
+
 }
