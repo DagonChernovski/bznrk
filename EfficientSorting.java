@@ -10,8 +10,7 @@ public class EfficientSorting {
             //for (int i=0; i<50; i++) System.out.println("| "+this.password[i]+" | ");
         }
         public int getKey() {return this.key;}
-        public Character[] getPass() //{return this.password;}
-        {Character[] ret = new Character[50]; for (int i = 0; i<50; i++) ret[i]=password[i]; return ret;}
+        public Character[] getPass() {Character[] ret = new Character[50]; for (int i = 0; i<50; i++) ret[i]=password[i]; return ret;}
     }
 
     static void InsertSort(item a[]) {
@@ -66,11 +65,22 @@ public class EfficientSorting {
                 a[i] = x; k=i; c++;} r=k-1;
         return c;
     }
-    void QuickSort(item a[], int l, int r) {
+    static void QuickSort(item a[], int l, int r) {
         int i=l,j=r;
-        item b;
+        item w;//=new item();
         item x=new item();
         x.setItem((a[l+r].getKey()/2),a[l+r].getPass());
-        while (a[i].key<x.key) {i=i+1;}
+        do {
+        while (a[i].key<x.key) i++;
+        while (x.key<a[j].key) j--;
+        if (i<=j) {
+            w = a[i] = a[j];
+            a[j] = w;
+            i++;
+            j--;
+        }
+        } while (i<=j);
+        if (l<j) QuickSort(a, l, j);
+        if (i<r) QuickSort(a, i,r);
     }
 }
