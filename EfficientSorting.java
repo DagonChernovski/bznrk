@@ -1,3 +1,5 @@
+package com.company;
+
 public class EfficientSorting {
     public static class item {
         Integer key=new Integer(0);
@@ -8,12 +10,12 @@ public class EfficientSorting {
             //for (int i=0; i<50; i++) System.out.println("| "+this.password[i]+" | ");
         }
         public int getKey() {return this.key;}
-        public String getPass() //{return this.password;}
-        {String ret=""; for (int i = 0; i<50; i++) ret=ret+password[i]; return ret;}
+        public Character[] getPass() //{return this.password;}
+        {Character[] ret = new Character[50]; for (int i = 0; i<50; i++) ret[i]=password[i]; return ret;}
     }
 
     static void InsertSort(item a[]) {
-        int j, n=10000;
+        int j, n=a.length;
         item x;
         for (int i=2; i<n; i++) {
             x=a[i]; a[0]=x; j=i-1;
@@ -24,31 +26,46 @@ public class EfficientSorting {
             a[j+1]=x;
         }
     }
-    static void SelectionSort(item a[]) {
-        int j, k, n=10000;
+    static int SelectionSort(item a[]) {
+        int j, k, c=0, n=a.length;
         item x;
-        for (int i=0; i<n-1; i++) {
+        for (int i=0; i<n; i++) {
             k=i; x=a[i];
             for (j=i+1; j<n; j++) {
-                if (a[j].key<x.key) {k=j; x=a[j];}
-                a[k]=a[i]; a[i]=x;
+                if (a[j].key<x.key) {k=j; x=a[j]; }
+                a[k]=a[i]; a[i]=x; c++;
             }
         }
+        return c;
     }
-    static item[] BubbleSort(item a[]) {
+    static int BubbleSort(item a[]) {
         item x;
-        int n=10000;
-        for (int i = 1; i < n; i++)
+        int n=a.length, c=0;
+        for (int i = 0; i < n; i++)
             for (int j = n-1; j > i; j--)
                 if (a[j].key < a[j-1].key) {
 
                     x = a[j - 1];
                     a[j - 1] = a[j];
-                    a[j] = x;
+                    a[j] = x; c++;
                 }
-        return a;
+        return c;
     }
-    void ShakerSort(item a) {}
+    static int ShakerSort(item a[]) {
+        int k=0,l=0, c=0, r=a.length;
+        item x;
+        for (int i=r-1; i>l; i--)
+            if (a[i-1].getKey()>a[i].getKey()) {
+            x = a[i - 1];
+                a[i - 1] = a[i];
+                a[i] = x; k=i; c++;} l=k+1;
+        for (int i=l; i<r; i++)
+            if (a[i-1].getKey()>a[i].getKey()) {
+                x = a[i - 1];
+                a[i - 1] = a[i];
+                a[i] = x; k=i; c++;} r=k-1;
+        return c;
+    }
     void QuickSort(item a[], int l, int r) {
         int i=l,j=r;
         item b;
@@ -57,16 +74,3 @@ public class EfficientSorting {
         while (a[i].key<x.key) {i=i+1;}
     }
 }
-
-//System.out.print("Switches ["+(j-1)+']'+a[j-1].getKey()+" and "+a[j].getKey());
-//if (Math.abs(5000-j)<=4995)
-//    for (int ii=-4; ii<5; ii++)
-//         System.out.print(a[j+ii].getKey()+" ");
-// System.out.println("    key+-4: "+j);
-
-/*public<Type> String PrintArray(int a, int b, Type arr[]) {\
-        String ret;
-        for (int i=a; i<b; i++) {
-            System.out.print(arr[i]);
-        }
-    }*/
