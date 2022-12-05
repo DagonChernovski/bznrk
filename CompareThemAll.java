@@ -1,4 +1,4 @@
-//package com.company;
+package com.company;
 
 import java.lang.String;
 import java.lang.Math;
@@ -9,6 +9,7 @@ import java.util.Random;
 public class CompareThemAll extends EfficientSorting {
 
     public static void main(String[] args) {
+
         item sorted[]=new item[10000];
         item random[]=new item[10000];
         item opposite[]=new item[10000];
@@ -39,57 +40,90 @@ public class CompareThemAll extends EfficientSorting {
         System.arraycopy(opposite, 0, opposite_, 0, 10000);
         //СТАДИЯ 2. СОРТИРОВКА
         long startTime, endTime;
-        long[][] timeElapsed=new long[5][3];
-        System.out.println("Сортировка вставками:\n");
+        long[][] timeElapsed=new long[6][3];
+        int[][] commits=new int[6][3];
+        System.out.println("Insert Sorting:\n");
         startTime=System.nanoTime();
         InsertSort(sorted);
         endTime=System.nanoTime();
-        timeElapsed[2][0]=endTime-startTime;
+        timeElapsed[0][0]=endTime-startTime;
         startTime=System.nanoTime();
         InsertSort(random);
         endTime=System.nanoTime();
-        timeElapsed[2][1]=endTime-startTime;
+        timeElapsed[0][1]=endTime-startTime;
         startTime=System.nanoTime();
         InsertSort(opposite);
         endTime=System.nanoTime();
-        timeElapsed[2][2]=endTime-startTime;
-        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
-        System.out.println("Cортировка выбором:\n");
+        timeElapsed[0][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[0][i]);
+        System.arraycopy(sorted, 0, sorted_, 0, 10000);
+        System.arraycopy(random, 0, random_, 0, 10000);
+        System.arraycopy(opposite, 0, opposite_, 0, 10000);
+
+        System.out.println("Selection Sorting:\n");
         startTime=System.nanoTime();
-        SelectionSort(sorted);
+        commits[1][0]=SelectionSort(sorted);
         endTime=System.nanoTime();
-        timeElapsed[2][0]=endTime-startTime;
+        timeElapsed[1][0]=endTime-startTime;
         startTime=System.nanoTime();
-        SelectionSort(random);
+        commits[1][1]=SelectionSort(random);
         endTime=System.nanoTime();
-        timeElapsed[2][1]=endTime-startTime;
+        timeElapsed[1][1]=endTime-startTime;
         startTime=System.nanoTime();
-        SelectionSort(opposite);
+        commits[1][2]=SelectionSort(opposite);
         endTime=System.nanoTime();
-        timeElapsed[2][2]=endTime-startTime;
-        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
-        System.arraycopy(random_, 0, random, 0, 10000);
-        System.arraycopy(opposite_, 0, opposite, 0, 10000);
-        System.out.println("Пузырьковая сортировка:\n");
-        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
-        startTime=System.nanoTime();
-        BubbleSort(random);
-        endTime=System.nanoTime();
-        timeElapsed[2][1]=endTime-startTime;
-        startTime=System.nanoTime();
-        BubbleSort(sorted);
-        endTime=System.nanoTime();
-        timeElapsed[2][0]=endTime-startTime;
-        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
-        startTime=System.nanoTime();
-        BubbleSort(opposite);
-        endTime=System.nanoTime();
-        timeElapsed[2][2]=endTime-startTime;
-        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]);
+        timeElapsed[1][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[1][i]+" "+commits[1][i]);
+        System.arraycopy(sorted_, 0, sorted, 0, 10000);
         System.arraycopy(random_, 0, random, 0, 10000);
         System.arraycopy(opposite_, 0, opposite, 0, 10000);
 
 
+
+        System.out.println("Bubble Sorting:\n");
+        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
+        startTime=System.nanoTime();
+        commits[2][0]=BubbleSort(sorted);
+        endTime=System.nanoTime();
+        timeElapsed[2][0]=endTime-startTime;
+        startTime=System.nanoTime();
+        commits[2][1]=BubbleSort(random);
+        endTime=System.nanoTime();
+        timeElapsed[2][1]=endTime-startTime;
+        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
+        startTime=System.nanoTime();
+        commits[2][2]=BubbleSort(opposite);
+        endTime=System.nanoTime();
+        timeElapsed[2][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[2][i]+" "+commits[2][i]);
+        //for (int i=0; i<10000; i++) System.out.println(sorted[i].getKey()+"   "+sorted_[i].getKey()+"  "+
+         //       (sorted_[i].getKey()==sorted[i].getKey())+"               "
+         //       +opposite[i].getKey()+"   "+opposite_[i].getKey()+"  "+((10001-opposite_[i].getKey())==opposite[i].getKey()));
+        System.arraycopy(sorted_, 0, sorted, 0, 10000);
+        System.arraycopy(random_, 0, random, 0, 10000);
+        System.arraycopy(opposite_, 0, opposite, 0, 10000);
+
+        System.out.println("Shaker sorting:\n");
+        startTime=System.nanoTime();
+        commits[3][1]=ShakerSort(random);
+        endTime=System.nanoTime();
+        timeElapsed[3][1]=endTime-startTime;
+        startTime=System.nanoTime();
+        commits[3][0]=ShakerSort(sorted);
+        endTime=System.nanoTime();
+        timeElapsed[3][0]=endTime-startTime;
+        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
+        startTime=System.nanoTime();
+        commits[3][2]=ShakerSort(opposite);
+        endTime=System.nanoTime();
+        timeElapsed[3][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[3][i]+" "+commits[3][i]);
+        //for (int i=0; i<10000; i++) System.out.println(sorted[i].getKey()+"   "+sorted_[i].getKey()+"  "+
+        //       (sorted_[i].getKey()==sorted[i].getKey())+"               "
+        //       +opposite[i].getKey()+"   "+opposite_[i].getKey()+"  "+((10001-opposite_[i].getKey())==opposite[i].getKey()));
+        System.arraycopy(sorted_, 0, sorted, 0, 10000);
+        System.arraycopy(random_, 0, random, 0, 10000);
+        System.arraycopy(opposite_, 0, opposite, 0, 10000);
     }
 
 }
