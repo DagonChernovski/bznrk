@@ -124,6 +124,30 @@ public class CompareThemAll extends EfficientSorting {
         System.arraycopy(sorted_, 0, sorted, 0, 10000);
         System.arraycopy(random_, 0, random, 0, 10000);
         System.arraycopy(opposite_, 0, opposite, 0, 10000);
+
+
+        System.out.println("QUICK sorting:\n");
+        startTime=System.nanoTime();
+        //commits[3][1]=
+        QuickSort(random, 0, 9999);
+        endTime=System.nanoTime();
+        timeElapsed[3][1]=endTime-startTime;
+        startTime=System.nanoTime();
+        QuickSort(sorted, 0, 9999);
+        endTime=System.nanoTime();
+        timeElapsed[3][0]=endTime-startTime;
+        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
+        startTime=System.nanoTime();
+        QuickSort(opposite, 0, 9999);
+        endTime=System.nanoTime();
+        timeElapsed[3][2]=endTime-startTime;
+        for (int i=0; i<3; i++) System.out.println(timeElapsed[3][i]);//+" "+commits[3][i]);
+        //for (int i=0; i<10000; i++) System.out.println(sorted[i].getKey()+"   "+sorted_[i].getKey()+"  "+
+        //       (sorted_[i].getKey()==sorted[i].getKey())+"               "
+        //       +opposite[i].getKey()+"   "+opposite_[i].getKey()+"  "+((10001-opposite_[i].getKey())==opposite[i].getKey()));
+        System.arraycopy(sorted_, 0, sorted, 0, 10000);
+        System.arraycopy(random_, 0, random, 0, 10000);
+        System.arraycopy(opposite_, 0, opposite, 0, 10000);
     }
 
 }
