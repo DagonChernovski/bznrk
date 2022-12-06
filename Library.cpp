@@ -1,10 +1,13 @@
 // WerdFinder.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
 
+#include "stdafx.h"
 #include <iostream>
 #include "cstdlib"
 #include "string"
 #include <fstream>
+#include <vector>
+#include <set>
 
 //список команд
 /*
@@ -21,32 +24,30 @@ enum speech { unknown, noun, adj, verb, adverb, interj };
 struct Slovo
 {
 	string word;
-	unsigned int length=word.length();
+	unsigned int length = word.length();
 	speech part;
 };
 
-extern Slovo words[100000];
-int word_count()
+int word_count(vector<Slovo> w)
 {
-	int i = 0; while (words[i].word!="") i++;
+	int i = 0; while (w[i].word != "") i++;
 	return i;
 }
 
-void ReadFrom(const char* filename[], speech what) {
+void ReadFrom(const char* filename[], vector<Slovo> *w, speech what) {
 	printf("oblast: %s\n", *filename);
 	ifstream is(*filename);
 	if (!is) {
-		
+
 	}
-	char str[100];
+	string str;
 	char *output[100000];
-	int i = word_count();
-	while (is && i<100000)
+	//int i = w.size();
+	while (is && w.size()<100000)
 	{
 		is.getline(str, 100);
-		words[i].word = str;
-		words[i].part = what;
-		i++;
+		w.push_back(str, what);
+		//i++;
 		//cout << str << endl;
 	}
 	is.close();
@@ -55,11 +56,12 @@ void ReadFrom(const char* filename[], speech what) {
 
 int main(int argc, char* argv[])
 {
+	vector<Slovo> words(10000);
 	setlocale(LC_CTYPE, "RUSSIAN");
-	const char *filename = "c:\\Users\\denpo\\source\\repos\\WerdFinder\\Debug\\petrov.txt";
+	const char *filename = "Words.txt";
 	printf("Reading files from: %s", filename);
-	ReadFrom(&filename, noun);
-	int w=word_count();
+	ReadFrom(&filename, &words, noun);
+	int w = word_count(words);
 	for (int i = 0; i < 10000; i++)
 	{
 		cout << words[i].word << endl; if (i % 10 == 0) cout << endl;
