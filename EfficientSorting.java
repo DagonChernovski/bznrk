@@ -77,15 +77,15 @@ public class EfficientSorting {
         } while (was);
     }
     static void QuickSort(item a[], int l, int r) {
-        Stack<Integer> left;
-        Stack<Integer> right;
+        if (a==null || a.length==0) return;
+        if (l>r) return;
         int i=l,j=r;
         item w;//=new item();
-        item x=new item();
-        x.setItem((a[l+r].getKey()/2),a[l+r].getPass());
+        int middle=l+(r-l)/2;
+        item pivot=a[middle];
         do {
-            while (a[i].key<x.key) i++;
-            while (x.key<a[j].key) j--;
+            while (a[i].getKey()<pivot.getKey()) i++;
+            while (pivot.getKey()<a[j].getKey()) j--;
             if (i<=j) {
                 w = a[i];
                 a[i] = a[j];
@@ -93,8 +93,8 @@ public class EfficientSorting {
                 i++;
                 j--;
             }
-        } while (i<=j);
+        } while (i<j);
         if (l<j) QuickSort(a, l, j);
-        if (i<r) QuickSort(a, i,r);
+        if (i<r) QuickSort(a, i, r);
     }
 }
