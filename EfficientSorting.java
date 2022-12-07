@@ -1,4 +1,4 @@
-package com.company;
+import java.util.Stack;
 
 public class EfficientSorting {
     public static class item {
@@ -10,7 +10,8 @@ public class EfficientSorting {
             //for (int i=0; i<50; i++) System.out.println("| "+this.password[i]+" | ");
         }
         public int getKey() {return this.key;}
-        public Character[] getPass() {Character[] ret = new Character[50]; for (int i = 0; i<50; i++) ret[i]=password[i]; return ret;}
+        public Character[] getPass()
+        {Character[] ret = new Character[50];for (int i = 0; i<50; i++) ret[i]=password[i]; return ret;}
     }
 
     static void InsertSort(item a[]) {
@@ -37,48 +38,61 @@ public class EfficientSorting {
         }
         return c;
     }
-    static int BubbleSort(item a[]) {
+    static void BubbleSort(item a[]) {
         item x;
-        int n=a.length, c=0;
+        int n = a.length;
         for (int i = 0; i < n; i++)
-            for (int j = n-1; j > i; j--)
-                if (a[j].key < a[j-1].key) {
+            for (int j = n - 1; j > i; j--)
+                if (a[j].key < a[j - 1].key) {
 
                     x = a[j - 1];
                     a[j - 1] = a[j];
-                    a[j] = x; c++;
+                    a[j] = x;
                 }
-        return c;
     }
-    static int ShakerSort(item a[]) {
-        int k=0,l=0, c=0, r=a.length;
+    static void ShakerSort(item a[]) {
+        int k=0, l=0, r=a.length;
         item x;
-        for (int i=r-1; i>l; i--)
-            if (a[i-1].getKey()>a[i].getKey()) {
-            x = a[i - 1];
-                a[i - 1] = a[i];
-                a[i] = x; k=i; c++;} l=k+1;
-        for (int i=l; i<r; i++)
-            if (a[i-1].getKey()>a[i].getKey()) {
-                x = a[i - 1];
-                a[i - 1] = a[i];
-                a[i] = x; k=i; c++;} r=k-1;
-        return c;
+        boolean was;
+        do {
+            was = false;
+            for (int i = r - 1; i > l; i--)
+                if (a[i - 1].getKey() > a[i].getKey()) {
+                    x = a[i - 1];
+                    a[i - 1] = a[i];
+                    a[i] = x;
+                    k = i;
+                    was=true;
+                }
+            l = k + 1;
+            for (int i = l; i < r; i++)
+                if (a[i - 1].getKey() > a[i].getKey()) {
+                    x = a[i - 1];
+                    a[i - 1] = a[i];
+                    a[i] = x;
+                    k = i;
+                    was=true;
+                }
+            r = k - 1;
+        } while (was);
     }
     static void QuickSort(item a[], int l, int r) {
+        Stack<Integer> left;
+        Stack<Integer> right;
         int i=l,j=r;
         item w;//=new item();
         item x=new item();
         x.setItem((a[l+r].getKey()/2),a[l+r].getPass());
         do {
-        while (a[i].key<x.key) i++;
-        while (x.key<a[j].key) j--;
-        if (i<=j) {
-            w = a[i] = a[j];
-            a[j] = w;
-            i++;
-            j--;
-        }
+            while (a[i].key<x.key) i++;
+            while (x.key<a[j].key) j--;
+            if (i<=j) {
+                w = a[i];
+                a[i] = a[j];
+                a[j] = w;
+                i++;
+                j--;
+            }
         } while (i<=j);
         if (l<j) QuickSort(a, l, j);
         if (i<r) QuickSort(a, i,r);
