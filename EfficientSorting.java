@@ -1,3 +1,5 @@
+package com.company;
+
 import java.util.Stack;
 
 public class EfficientSorting {
@@ -14,7 +16,8 @@ public class EfficientSorting {
         {Character[] ret = new Character[50];for (int i = 0; i<50; i++) ret[i]=password[i]; return ret;}
     }
 
-    static void InsertSort(item a[]) {
+    static long InsertSort(item a[]) {
+        long startTime=System.nanoTime();
         int j, n=a.length;
         item x;
         for (int i=2; i<n; i++) {
@@ -25,20 +28,25 @@ public class EfficientSorting {
             }
             a[j+1]=x;
         }
+        long endTime=System.nanoTime();
+        return endTime-startTime;
     }
-    static int SelectionSort(item a[]) {
-        int j, k, c=0, n=a.length;
+    static long SelectionSort(item a[]) {
+        long startTime=System.nanoTime();
+        int j, k, n=a.length;
         item x;
         for (int i=0; i<n; i++) {
             k=i; x=a[i];
             for (j=i+1; j<n; j++) {
                 if (a[j].key<x.key) {k=j; x=a[j]; }
-                a[k]=a[i]; a[i]=x; c++;
+                a[k]=a[i]; a[i]=x;
             }
         }
-        return c;
+        long endTime=System.nanoTime();
+        return endTime-startTime;
     }
-    static void BubbleSort(item a[]) {
+    static long BubbleSort(item a[]) {
+        long startTime=System.nanoTime();
         item x;
         int n = a.length;
         for (int i = 0; i < n; i++)
@@ -49,8 +57,11 @@ public class EfficientSorting {
                     a[j - 1] = a[j];
                     a[j] = x;
                 }
+        long endTime=System.nanoTime();
+        return endTime-startTime;
     }
-    static void ShakerSort(item a[]) {
+    static long ShakerSort(item a[]) {
+        long startTime=System.nanoTime();
         int k=0, l=0, r=a.length;
         item x;
         boolean was;
@@ -75,10 +86,13 @@ public class EfficientSorting {
                 }
             r = k - 1;
         } while (was);
+        long endTime=System.nanoTime();
+        return endTime-startTime;
     }
-    static void QuickSort(item a[], int l, int r) {
-        if (a==null || a.length==0) return;
-        if (l>r) return;
+    static long QuickSort(item a[], int l, int r) {
+        if (a==null || a.length==0) return -1;
+        if (l>r) return -1;
+        long startTime=System.nanoTime();
         int i=l,j=r;
         item w;//=new item();
         int middle=l+(r-l)/2;
@@ -96,5 +110,7 @@ public class EfficientSorting {
         } while (i<j);
         if (l<j) QuickSort(a, l, j);
         if (i<r) QuickSort(a, i, r);
+        long endTime=System.nanoTime();
+        return endTime-startTime;
     }
 }
