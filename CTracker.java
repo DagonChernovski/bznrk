@@ -77,20 +77,21 @@ public class CTracker extends EfficientSorting {
     static int[] QuickSortC(item a[], int l, int r) {
         int i=l,j=r,compare=0,assign=0;
         item w;//=new item();
-        item x=new item();
-        x.setItem((a[l+r].getKey()/2),a[l+r].getPass());
+        int middle=l+(r-l)/2;
+        item pivot=a[middle];
         do {
-            while (a[i].key<x.key) i++; compare+=(assign+=i);
-            while (x.key<a[j].key) j--; compare+=(assign+=i);
+            while (a[i].getKey()<pivot.getKey()) i++;
+            while (pivot.getKey()<a[j].getKey()) j--;
             if (i<=j) {
-                w = a[i] = a[j];
+                w = a[i];
+                a[i] = a[j];
                 a[j] = w;
                 i++;
                 j--;
             }
-        } while (i<=j);
+        } while (i<j);
         if (l<j) QuickSortC(a, l, j);
-        if (i<r) QuickSortC(a, i,r);
+        if (i<r) QuickSortC(a, i, r);
         int c[]=new int[2];
         c[0]=compare;c[1]=assign;
         return c;
