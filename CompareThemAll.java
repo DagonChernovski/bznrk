@@ -17,7 +17,7 @@ public class CompareThemAll extends CTracker {
             case 1: return SelectionSort(a);
             case 2: return BubbleSort(a);
             case 3: return ShakerSort(a);
-            default: return QuickSort(a,0,10000);
+            default: return QuickSort(a,0,9999);
         }
     }
     static int[] SortC(item[] a, int i) {
@@ -26,7 +26,7 @@ public class CompareThemAll extends CTracker {
             case 1: return SelectionSortC(a);
             case 2: return BubbleSortC(a);
             case 3: return ShakerSortC(a);
-            default: return QuickSortC(a,0,10000);
+            default: return QuickSortC(a,0,9999);
             //default: throw new Exception("You picked the wrong number fool");
         }
     }
