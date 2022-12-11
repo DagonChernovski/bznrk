@@ -1,5 +1,3 @@
-package com.company;
-
 import java.lang.String;
 import java.lang.Math;
 import java.util.Random;
@@ -11,7 +9,7 @@ enum measure {timed, assigns};
 public class CompareThemAll extends CTracker {
 
     static long SortWay(item[] a, int i) {
-        long ret;
+       
         switch(i) {
             case 0: return InsertSort(a);
             case 1: return SelectionSort(a);
@@ -85,14 +83,10 @@ public class CompareThemAll extends CTracker {
         for (int i=0; i<5; i++) {
             System.out.println(sorting_type[i]);
             for (int j = 0; j < 3; j++)
-                System.out.println(timeElapsed[i][j]);
+                System.out.println("Time elapsed: "+timeElapsed[i][j]+
+                        " Comparisons:"+inner_efficiency[i][j][0]+
+                        " Assignations: "+inner_efficiency[i][j][1]);
         }
     }
 
 }
-
-/* for (int i=0; i<10000; i++) System.out.println(sorted[i].getKey()+"   "+sorted_[i].getKey()+"  "+
-                (sorted_[i].getKey()==sorted[i].getKey())+"               "
-                +opposite[i].getKey()+"   "+opposite_[i].getKey()+"  "+((10001-opposite_[i].getKey())==opposite[i].getKey()));
-
- */
