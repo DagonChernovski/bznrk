@@ -1,7 +1,5 @@
 package com.company;
 
-import java.util.Stack;
-
 public class EfficientSorting {
     public static class item {
         Integer key=new Integer(0);
@@ -62,12 +60,12 @@ public class EfficientSorting {
     }
     static long ShakerSort(item a[]) {
         long startTime=System.nanoTime();
-        int k=0, l=0, r=a.length;
+        int k=0, l=0, r=a.length-1;
         item x;
         boolean was;
         do {
             was = false;
-            for (int i = r - 1; i > l; i--)
+            for (int i = r; i > l; i--)
                 if (a[i - 1].getKey() > a[i].getKey()) {
                     x = a[i - 1];
                     a[i - 1] = a[i];
@@ -90,8 +88,8 @@ public class EfficientSorting {
         return endTime-startTime;
     }
     static long QuickSort(item a[], int l, int r) {
-        if (a==null || a.length==0) return -1;
-        if (l>r) return -1;
+        if (a==null || a.length==0) return 0;
+        if (l>r) return 0;
         long startTime=System.nanoTime();
         int i=l,j=r;
         item w;//=new item();
@@ -113,4 +111,29 @@ public class EfficientSorting {
         long endTime=System.nanoTime();
         return endTime-startTime;
     }
+    static void silf(item a[])
+    {
+        int i,j;
+        int l=0, r=a.length;
+        item x;
+        i=0; j=2*i; x=a[i];
+        while (j<=r) {
+            if(j<r && a[j].getKey()>a[j+1].getKey())
+                i=j+1;
+            if (x.getKey()<=a[j].getKey()) break;
+            a[i]=a[j];
+            i=j;
+            j=2*i;
+        }
+        a[i]=x;
+    };
+    static long PiramidalSort(item a[]) {
+        long startTime=System.nanoTime();
+        int l=10000,r=10000;
+        item x;
+        while (l>1) {l--; silf(a);}
+        while (r>1) {x=a[1]; a[1]=a[r]; a[r]=x; r=r-1; silf(a);}
+        long endTime=System.nanoTime();
+        return endTime-startTime;
+    };
 }
