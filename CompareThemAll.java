@@ -1,24 +1,27 @@
+package com.company;
+
 import java.lang.String;
 import java.lang.Math;
 import java.util.Random;
 //import java.util.Arrays;
 //import java.util.Scanner;
 
-enum measure {timed, assigns};
-
 public class CompareThemAll extends CTracker {
 
     static long SortWay(item[] a, int i) {
-       
+        //System.out.println("SortWay"+i+"commit");
         switch(i) {
             case 0: return InsertSort(a);
             case 1: return SelectionSort(a);
             case 2: return BubbleSort(a);
             case 3: return ShakerSort(a);
-            default: return QuickSort(a,0,9999);
+            case 4: return QuickSort(a,0,9999);
+            case 5: return PiramidalSort(a);
+            default: return 0;
         }
     }
-    static int[] SortC(item[] a, int i) {
+    static long[] SortC(item[] a, int i) {
+        //System.out.println("SortC"+i+"commit");
         switch(i) {
             case 0: return InsertSortC(a);
             case 1: return SelectionSortC(a);
@@ -64,11 +67,11 @@ public class CompareThemAll extends CTracker {
         e[1]=random;
         e[2]=opposite;
         item[][] e_ =new item[3][];
-        e_[0]=sorted;
-        e_[1]=random;
-        e_[2]=opposite;
+        e_[0]=sorted_;
+        e_[1]=random_;
+        e_[2]=opposite_;
         long[][] timeElapsed=new long[6][3];
-        int[][][] inner_efficiency=new int[6][3][2];
+        long[][][] inner_efficiency=new long[6][3][2];
         for (int i=0; i<6; i++) {
             for (int j = 0; j < 3; j++) {
                 timeElapsed[i][j] = SortWay(e[j], i);
