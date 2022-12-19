@@ -3,31 +3,28 @@ package com.company;
 import java.lang.String;
 import java.lang.Math;
 import java.util.Random;
-//import java.util.Arrays;
-//import java.util.Scanner;
 
 public class CompareThemAll extends CTracker {
 
     static long SortWay(item[] a, int i) {
-        //System.out.println("SortWay"+i+"commit");
         switch(i) {
             case 0: return InsertSort(a);
             case 1: return SelectionSort(a);
             case 2: return BubbleSort(a);
             case 3: return ShakerSort(a);
             case 4: return QuickSort(a,0,9999);
-            case 5: return PiramidalSort(a);
+            case 5: return PyramidalSort(a);
             default: return 0;
         }
     }
     static long[] SortC(item[] a, int i) {
-        //System.out.println("SortC"+i+"commit");
         switch(i) {
             case 0: return InsertSortC(a);
             case 1: return SelectionSortC(a);
             case 2: return BubbleSortC(a);
             case 3: return ShakerSortC(a);
-            default: return QuickSortC(a,0,9999);
+            case 4: return QuickSortC(a,0,9999);
+            default: return PyramidalSortC(a);
             //default: throw new Exception("You picked the wrong number fool");
         }
     }
@@ -47,12 +44,7 @@ public class CompareThemAll extends CTracker {
             random[i]=new item();
             sorted[i].setItem(i, pass);
             opposite[i].setItem(10000-i, pass);
-            random[i].setItem((int)(Math.random()*10000), pass);
-            //System.out.print("works    "+i+"   ");
-
-            //for (int j=0; j<50; j++) System.out.print(pass[j]);
-            //if (pass==sorted[i-1].getPass());
-            //System.out.println();
+            random[i].setItem((int)(Math.random()*1000000), pass);
         }
         //СТАДИЯ 1.5. Создадим копии массивов
         item sorted_[]=new item[10000];
@@ -80,10 +72,9 @@ public class CompareThemAll extends CTracker {
                 System.arraycopy(e_[j], 0, e[j], 0, 10000);
             }
         }
-        //for (int i=0; i<10000; i++) System.out.println(random[i].getKey()+" "+random[i].getPass());
         //ВЫВОД ВСЕХ ДАННЫХ!!!
-        String sorting_type[]={"InsertSort","SelectionSort","BubbleSort","ShakerSort","QuickSort"};
-        for (int i=0; i<5; i++) {
+        String sorting_type[]={"InsertSort","SelectionSort","BubbleSort","ShakerSort","QuickSort","PyramidalSort"};
+        for (int i=0; i<6; i++) {
             System.out.println(sorting_type[i]);
             for (int j = 0; j < 3; j++)
                 System.out.println("Time elapsed: "+timeElapsed[i][j]+
@@ -91,5 +82,6 @@ public class CompareThemAll extends CTracker {
                         " Assignations: "+inner_efficiency[i][j][1]);
         }
     }
-
 }
+
+//if (i==5 && j==2) for (int k=0; k<10000; k++) System.out.println(e_[j][k].getKey()+" "+e[j][k].getKey());
