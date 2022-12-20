@@ -2,17 +2,18 @@ package com.company;
 
 public class CTracker extends EfficientSorting {
     static long[] InsertSortC (item a[]) {
-        int j, n=a.length,assign=0,compare=0;
+        int j, l,r,m,n=a.length,assign=0,compare=0;
         item x;
-        for (int i=2; i<n; i++) {
-            x=a[i]; a[0]=x; j=i-1;
-            while (x.key<a[j].key) {
-                a[j+1]=a[j];
-                j=j-1;
-                compare++; assign+=2;
+        for (int i=1; i<n; i++) {
+            x=a[i]; l=0; r=i-1; assign++;
+            while (l<=r) {
+                m=(l+r)/2;
+                if (x.key<a[m].key) r=m-1;
+                else l=m+1;
+                compare++;
             }
-            a[j+1]=x;
-            compare++; assign+=4;
+            for (j=i-1; j>=0; j--) {a[j+1]=a[j]; assign++;}
+            a[i]=x; assign++;
         }
         long c[]=new long[2];
         c[0]=compare;c[1]=assign;
@@ -88,7 +89,7 @@ public class CTracker extends EfficientSorting {
         item w;//=new item();
         int middle=l+(r-l)/2;
         item pivot=a[middle];
-        assign+=4;
+        assign++;
         do {
             while (a[i].key<pivot.key) {i++;}
             while (pivot.key<a[j].key) {j--;}
@@ -115,10 +116,9 @@ public class CTracker extends EfficientSorting {
         int max = i,compare=0,assign=0;
         int l = 2*i + 1;
         int r = 2*i + 2;
-        if (l < n && a[l].key > a[max].key)
-        {max = l; assign++;}
-        if (r < n && a[r].key > a[max].key)
-        { max = r; assign++;}
+        if (l < n && a[l].key > a[max].key) max = l;
+        if (r < n && a[r].key > a[max].key) max = r;
+        compare+=2;
         long _c[]=new long[2];
         if (max != i)
         {
@@ -126,11 +126,11 @@ public class CTracker extends EfficientSorting {
             a[i] = a[max];
             a[max] = swap;
             _c=siftC(a, n, max);
+            assign+=3;
         }
-        compare+=5;
-        long[] c =new long[2];
+        long[] c = new long[2];
         c[0]+=_c[0]; c[1]+=_c[1];
-        c[0]+=compare;c[1]+=assign;
+        c[0]+=compare; c[1]+=assign;
         return c;
     }
     static long[] PyramidalSortC(item a[]) {
@@ -150,7 +150,7 @@ public class CTracker extends EfficientSorting {
             size--;
             _c=siftC(a, size,0);
             c[0]+=_c[0]; c[1]+=_c[1];
-            c[0]++; c[1]+=5;
+            c[0]++; c[1]+=3;
         }
         return c;
     }
