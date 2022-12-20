@@ -12,19 +12,19 @@ public class EfficientSorting {
     }
 
     static long InsertSort(item a[]) {
-        long startTime=System.nanoTime();
-        int j, n=a.length;
+        long startTime = System.nanoTime();
+        int j, l, r, m, n = a.length;
         item x;
-        for (int i=2; i<n; i++) {
-            x=a[i]; a[0]=x; j=i-1;
-            while (x.key<a[j].key) {
-                a[j+1]=a[j];
-                j=j-1;
-            }
-            a[j+1]=x;
+        for (int i = 1; i < n; i++) {
+            x = a[i];
+            m = i - 1;
+            for (j = i - 1; j > m; j--) {
+                if (j<0) break;
+                a[j+1] = a[j - 1];}
+            a[m] = x;
         }
-        long endTime=System.nanoTime();
-        return endTime-startTime;
+    long endTime=System.nanoTime();
+    return endTime-startTime;
     }
     static long SelectionSort(item a[]) {
         long startTime=System.nanoTime();
