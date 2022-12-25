@@ -1,5 +1,3 @@
-package com.company;
-
 public class EfficientSorting {
     public static class item {
         Integer key=new Integer(0);
@@ -16,15 +14,19 @@ public class EfficientSorting {
         int j, l, r, m, n = a.length;
         item x;
         for (int i = 1; i < n; i++) {
-            x = a[i];
-            m = i - 1;
-            for (j = i - 1; j > m; j--) {
+            x=a[i]; l=0; r=i-1;
+            while (l<=r) {
+                m = (l + r) / 2;
+                if (x.key < a[m].key) r = m - 1;
+                else l = m + 1;
+            }
+            for (j = i - 1; j > l; j--) {
                 if (j<0) break;
                 a[j+1] = a[j - 1];}
-            a[m] = x;
+            a[l] = x;
         }
-    long endTime=System.nanoTime();
-    return endTime-startTime;
+        long endTime=System.nanoTime();
+        return endTime-startTime;
     }
     static long SelectionSort(item a[]) {
         long startTime=System.nanoTime();
