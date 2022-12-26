@@ -11,7 +11,7 @@ import static com.company.speech.*;
 
 enum speech {unknown, noun, adj, verb, interj, adverb};
 
-public class Main{
+public class Main {
     public static class Slovo {
         char[] word=new char[256];
         speech part;
@@ -24,17 +24,19 @@ public class Main{
     static void ReadFrom(String filename, Vector<Slovo> w, speech what) throws IOException {
         try (FileReader reader=new FileReader(filename)) {
             StringBuilder result = new StringBuilder();
-            char c;
-            while (c!=null)
+            char[] c = new char[20];;
+            while (reader!=null)
                 result.append('\n').append(c);
-                System.out.println(buf);
-                Slovo nu=new Slovo(buf, what);
-                w.add(nu);
-                //System.out.print(Arrays.toString(w.lastElement().word) +" ");
+            System.out.println(result);
             }
+            //Slovo nu=new Slovo(s, what);
+           // w.add(nu);
+            //System.out.print(Arrays.toString(w.lastElement().word) +" ");
         }
     }
-    public void FindWord(String word, )
+    public void FindWord(String word, Vector <Slovo> w, int length, char[] mask) {
+
+    }
     public static void main(String[] args) throws IOException {
         Vector<Slovo> words=new Vector(10, 1);
         String filename="C:\\Users\\denpo\\IdeaProjects\\WerdFinder\\Nouns.txt";
