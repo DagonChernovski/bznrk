@@ -12,21 +12,20 @@ public class CTracker extends EfficientSorting {
                 else l=m+1;
                 compare++;
             }
-            for (j=i-1; j>=0; j--) {a[j+1]=a[j]; assign++;}
+            for (j=i-1; j>=l; j--) {a[j+1]=a[j]; assign++;}
             a[i]=x; assign++;
         }
         long c[]=new long[2];
         c[0]=compare;c[1]=assign;
         return c;
     }
-    static long[] SelectionSortC(item a[]) { //без барьера
-        int j, k, compare=0,assign=0, n=a.length;
+    static long[] SelectionSortC(item a[]) {
+        int compare=0, assign=0, n=a.length;
         item x;
         for (int i=0; i<n; i++) {
-            k=i; x=a[i]; assign++;
-            for (j=i+1; j<n; j++) {
-                if (a[j].key<x.key) {k=j; x=a[j]; assign+=2;}
-                a[k]=a[i]; a[i]=x; compare++; assign+=3;
+            for (int j=i+1; j<n; j++) {
+                if (a[j].key<a[i].key) {x=a[j]; a[j]=a[i]; a[i]=x; assign+=3;}
+                  compare++;
             }
             //System.out.printf("A %d C %d\n",assign,compare);
         }
@@ -56,28 +55,28 @@ public class CTracker extends EfficientSorting {
         boolean was;
         do {
             was=false;
-            for (int i = r; i > l; i--)
+            for (int i = r; i > l; i--) {
                 if (a[i - 1].key > a[i].key) {
                     x = a[i - 1];
                     a[i - 1] = a[i];
                     a[i] = x;
                     k = i;
-                    assign += 4;
-                    compare++;
+                    assign += 3;
                     was = true;
                 }
+                compare++;
+            }
             l = k+1;
-            for (int i = l; i <= r; i++)
+            for (int i = l; i <= r; i++) {
                 if (a[i - 1].key > a[i].key) {
                     x = a[i - 1];
                     a[i - 1] = a[i];
                     a[i] = x;
                     k = i;
-                    assign += 4;
-                    compare++;
+                    assign += 3;
                     was = true;
-                }
-            compare+=2; assign+=5;
+                } compare++;
+            }
             r = k;
         } while (was);
         long c[]=new long[2];
@@ -85,15 +84,15 @@ public class CTracker extends EfficientSorting {
         return c;
     }
     static long[] QuickSortC(item a[], int l, int r) {
+        if (a==null || a.length==0 || (l>r)) {long _c[]={0,0}; return _c;}
         int i=l,j=r,compare=0,assign=0;
         item w;//=new item();
-        int middle=l+(r-l)/2;
-        item pivot=a[middle];
-        assign++;
+        item pivot=a[l+(r-l)/2];
+        assign+=4;
         do {
-            while (a[i].key<pivot.key) {i++;}
-            while (pivot.key<a[j].key) {j--;}
-            compare+=(i-l)+(r-j);
+            while (a[i].key<pivot.key) {i++; compare++;}
+            while (pivot.key<a[j].key) {j--; compare++;}
+            compare+=2;
             if (i<=j) {
                 w = a[i];
                 a[i] = a[j];
@@ -113,7 +112,7 @@ public class CTracker extends EfficientSorting {
         return c;
     }
     static long[] siftC(item a[], int n, int i) {
-        int max = i,compare=0,assign=0;
+        int max = i, compare=0, assign=0;
         int l = 2*i + 1;
         int r = 2*i + 2;
         if (l < n && a[l].key > a[max].key) max = l;
@@ -122,9 +121,9 @@ public class CTracker extends EfficientSorting {
         long _c[]=new long[2];
         if (max != i)
         {
-            item swap = a[i];
+            item temp = a[i];
             a[i] = a[max];
-            a[max] = swap;
+            a[max] = temp;
             _c=siftC(a, n, max);
             assign+=3;
         }
@@ -150,7 +149,7 @@ public class CTracker extends EfficientSorting {
             size--;
             _c=siftC(a, size,0);
             c[0]+=_c[0]; c[1]+=_c[1];
-            c[0]++; c[1]+=3;
+            c[0]++; c[1]+=5;
         }
         return c;
     }
