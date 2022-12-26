@@ -1,3 +1,5 @@
+package com.company;
+
 public class EfficientSorting {
     public static class item {
         Integer key=new Integer(0);
@@ -21,7 +23,6 @@ public class EfficientSorting {
                 else l = m + 1;
             }
             for (j = i - 1; j > l; j--) {
-                if (j<0) break;
                 a[j+1] = a[j - 1];}
             a[l] = x;
         }
@@ -30,13 +31,11 @@ public class EfficientSorting {
     }
     static long SelectionSort(item a[]) {
         long startTime=System.nanoTime();
-        int j, k, n=a.length;
+        int j,n=a.length;
         item x;
         for (int i=0; i<n; i++) {
-            k=i; x=a[i];
             for (j=i+1; j<n; j++) {
-                if (a[j].key<x.key) {k=j; x=a[j]; }
-                a[k]=a[i]; a[i]=x;
+                if (a[j].key<a[i].key) {x=a[j]; a[j]=a[i]; a[i]=x;}
             }
         }
         long endTime=System.nanoTime();
@@ -92,8 +91,7 @@ public class EfficientSorting {
         long startTime=System.nanoTime();
         int i=l,j=r;
         item w;//=new item();
-        int middle=l+(r-l)/2;
-        item pivot=a[middle];
+        item pivot=a[l+(r-l)/2];
         do {
             while (a[i].key<pivot.key) i++;
             while (pivot.key<a[j].key) j--;
@@ -131,10 +129,8 @@ public class EfficientSorting {
         int max = i;
         int l = 2*i + 1;
         int r = 2*i + 2;
-        if (l < n && a[l].key > a[max].key)
-            max = l;
-        if (r < n && a[r].key > a[max].key)
-            max = r;
+        if (l < n && a[l].key > a[max].key) max = l;
+        if (r < n && a[r].key > a[max].key) max = r;
         if (max != i)
         {
             item temp = a[i];
