@@ -23,12 +23,10 @@ public class CTracker extends EfficientSorting {
         int compare=0, assign=0, jj, n=a.length;
         item x;
         for (int i=0; i<n; i++) {
-            x=a[i]; jj=i;
-            for (int j=i+1; j<n; j++) {//
-                if (a[j].key<a[i].key) {x=a[j]; jj=j; assign++;}//
-                compare++;
-            }
-            a[i]=a[jj]; a[jj]=x; assign+=2;
+            x=a[i]; assign++; jj=i;
+            for (int j=i+1; j<n; j++)
+            {if (a[j].key<x.key) {x=a[j]; jj=j; assign++;} compare++;}
+            if (jj!=i) {a[jj]=a[i]; a[i]=x; assign+=2;}
             //System.out.printf("A %d C %d\n",assign,compare);
         }
         long c[]=new long[2];
