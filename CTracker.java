@@ -12,21 +12,23 @@ public class CTracker extends EfficientSorting {
                 else l=m+1;
                 compare++;
             }
-            for (j=i-1; j>=l; j--) {a[j+1]=a[j]; assign++;}
-            a[i]=x; assign++;
+            for (j=i-1; j>l; j--) {a[j+1]=a[j]; assign++;}
+            a[l]=x; assign++;
         }
         long c[]=new long[2];
         c[0]=compare;c[1]=assign;
         return c;
     }
     static long[] SelectionSortC(item a[]) {
-        int compare=0, assign=0, n=a.length;
+        int compare=0, assign=0, jj, n=a.length;
         item x;
         for (int i=0; i<n; i++) {
-            for (int j=i+1; j<n; j++) {
-                if (a[j].key<a[i].key) {x=a[j]; a[j]=a[i]; a[i]=x; assign+=3;}
-                  compare++;
+            x=a[i]; jj=i;
+            for (int j=i+1; j<n; j++) {//
+                if (a[j].key<a[i].key) {x=a[j]; jj=j; assign++;}//
+                compare++;
             }
+            a[i]=a[jj]; a[jj]=x; assign+=2;
             //System.out.printf("A %d C %d\n",assign,compare);
         }
         long c[]=new long[2];
@@ -63,8 +65,7 @@ public class CTracker extends EfficientSorting {
                     k = i;
                     assign += 3;
                     was = true;
-                }
-                compare++;
+                } compare++;
             }
             l = k+1;
             for (int i = l; i <= r; i++) {
