@@ -36,7 +36,7 @@ public class EfficientSorting {
         for (int i=0; i<n; i++) {
             x=a[i]; jj=i;
             for (int j=i+1; j<n; j++)
-                if (a[j].key<a[i].key) {x=a[j]; jj=j;}
+                if (a[j].key<x.key) {x=a[j]; jj=j;}
             if (jj!=i) {a[jj]=a[i]; a[i]=x;}
         }
         long endTime=System.nanoTime();
