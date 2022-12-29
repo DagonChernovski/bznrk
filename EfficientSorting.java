@@ -31,12 +31,13 @@ public class EfficientSorting {
     }
     static long SelectionSort(item a[]) {
         long startTime=System.nanoTime();
-        int j,n=a.length;
+        int jj, n=a.length;
         item x;
         for (int i=0; i<n; i++) {
-            for (j=i+1; j<n; j++) {
-                if (a[j].key<a[i].key) {x=a[j]; a[j]=a[i]; a[i]=x;}
-            }
+            x=a[i]; jj=i;
+            for (int j=i+1; j<n; j++)
+                if (a[j].key<a[i].key) {x=a[j]; jj=j;}
+            if (jj!=i) {a[jj]=a[i]; a[i]=x;}
         }
         long endTime=System.nanoTime();
         return endTime-startTime;
@@ -48,7 +49,6 @@ public class EfficientSorting {
         for (int i = 0; i < n; i++)
             for (int j = n - 1; j > i; j--)
                 if (a[j].key < a[j - 1].key) {
-
                     x = a[j - 1];
                     a[j - 1] = a[j];
                     a[j] = x;
@@ -108,23 +108,7 @@ public class EfficientSorting {
         long endTime=System.nanoTime();
         return endTime-startTime;
     }
-    /*static void sift(item a[], int l, int r) {
-        int i, j;
-        //int l = 0, r = a.length;
-        item x;
-        i = l;
-        j = 2 * i;
-        x = a[i];
-        while (j <= r) {
-            if (j < r && a[j].key > a[j + 1].key)
-                i = j + 1;
-            if (x.key <= a[j].key) break;
-            a[i] = a[j];
-            i = j;
-            j = 2 * i;
-        }
-        a[i] = x;
-    }*/
+
     static void sift(item a[], int n, int i) {
         int max = i;
         int l = 2*i + 1;
