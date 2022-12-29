@@ -67,7 +67,7 @@ public class Main extends CTracker {
         for (int i=0; i<6; i++) {
             for (int j = 0; j < 3; j++) {
                 timeElapsed[i][j] = SortWay(e[j], i);
-                if (i==0 && j==1) for (int k=0; k<10000; k++) System.out.println(e[j][k].key+" "+e_[j][k].key);
+                if (i==1 && j==1) for (int k=0; k<10000; k++) System.out.println(e[j][k].key+" "+e_[j][k].key);
                 System.arraycopy(e_[j], 0, e[j], 0, 10000);
                 inner_efficiency[i][j] = SortC(e[j], i);
                 System.arraycopy(e_[j], 0, e[j], 0, 10000);
