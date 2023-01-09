@@ -10,15 +10,6 @@ import java.util.*;
 //enum speech {unknown, noun, adj, verb, interj, adverb};
 
 public class Main {
-    /*public static class Slovo {
-        String word;
-        speech part;
-        Slovo (String word, speech part)
-        {
-            this.word=word;
-            this.part=part;
-        }
-    }*/
     static void ReadFrom(File f, List<String> w) {
         try {
             FileReader fr = new FileReader(f);
@@ -28,7 +19,6 @@ public class Main {
                 w.add(line);
                 line = reader.readLine();
             }
-            //System.out.print(Arrays.toString(w.lastElement().word) +" ");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -96,7 +86,8 @@ public class Main {
                 case '=':
                     break;
             }
-        } while (C2S(list.get(pivot), word) == '<' && C2S(list.get(pivot+1), word) == '>');
+            if (pivot==0 || pivot>=list.size()-2) break;
+        } while ((C2S(list.get(pivot), word) == '<' && pivot!=0) || C2S(list.get(pivot-1), word) == '>');
         list.add(pivot,word);
     }
 
@@ -113,9 +104,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        //Vector<Slovo> words=new Vector(10, 1);
         List<String> words = new ArrayList<>();
-        String filename = "C:\\Users\\denpo\\IdeaProjects\\WerdFinder\\russian_nouns.txt";
+        String filename = "D:\\Work\\WordSearchNetwork\\src\\slova.txt";
         File f = new File(filename);
         //System.out.println("Reading from: "+filename);
         ReadFrom(f, words);
@@ -125,10 +115,22 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         do {
             String input = sc.nextLine();
-            if (input==null) continue;
+            if (input.length()<1) continue;
             if (input.charAt(0) != '/') {
                 System.out.println("Введите /маска для поиска по маске");
                 continue;
+            }
+            if (input.equals("/инфо")) {
+                System.out.println("Всего хранится " + words.size() + " слов.");
+            }
+            if (input.equals("/помощь")) {
+                System.out.println("Список команд:\n " +
+                        "/помощь - собственно помощь\n" +
+                        "/маска или /поиск - поиск слова по заданной маске через буквы и '_'\n" +
+                        "/меню - выход из поиска по маске\n" +
+                        "/добавить - добавление слова\n" +
+                        "/удалить - удаление слова\n" +
+                        "/стоп - остановить программу");
             }
             if (input.equals("/маска")) {
                 do {
@@ -146,12 +148,26 @@ public class Main {
             if (input.equals("/добавить")) {
                 System.out.println("Введите слово для добавления");
                 String word=sc.nextLine();
+                if (words.contains(word)) {System.out.println("Такое слово уже существует"); continue;}
                 System.out.println("Добавить слово \""+word+"\" в базу? (да,нет)");
                 input=sc.nextLine();
                 switch (input.toLowerCase(Locale.ROOT)) {
                     case "да": case "/да":
                         addWord(word,words);
                         System.out.println("Добавлено. Индекс: "+locateWord(word,words));
+                        break;
+                    default: break;
+                }
+            }
+            if (input.equals("/удалить")) {
+                System.out.println("Введите слово для удаления");
+                String word=sc.nextLine();
+                System.out.println("Удалить слово\""+word+"\"? (да,нет)");
+                input=sc.nextLine();
+                switch (input.toLowerCase(Locale.ROOT)) {
+                    case "да": case "/да":
+                        words.remove(word);
+                        System.out.println("Удалено.");
                         break;
                     default: break;
                 }
