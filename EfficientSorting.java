@@ -2,8 +2,8 @@ package com.company;
 
 public class EfficientSorting {
     public static class item {
-        Integer key=new Integer(0);
-        Character[] password =new Character[50];
+        Integer key;//=new Integer(0);
+        Character[] password;// =new Character[50];
         public item() {this.key=0; this.password=new Character[50];}
         public void setItem(Integer key, Character[] password) {
             this.key=key; for (int i = 0; i<50; i++) this.password[i]=password[i];
@@ -22,8 +22,8 @@ public class EfficientSorting {
                 if (x.key < a[m].key) r = m - 1;
                 else l = m + 1;
             }
-            for (j = i - 1; j > l; j--) {
-                a[j+1] = a[j - 1];}
+            for (j = i; j > l; j--)
+                a[j] = a[j-1];
             a[l] = x;
         }
         long endTime=System.nanoTime();
@@ -45,14 +45,20 @@ public class EfficientSorting {
     static long BubbleSort(item a[]) {
         long startTime=System.nanoTime();
         item x;
+        boolean was;
         int n = a.length;
-        for (int i = 0; i < n; i++)
-            for (int j = n - 1; j > i; j--)
+        for (int i = 0; i < n; i++) {
+            was = false;
+            for (int j = n - 1; j > i; j--) {
                 if (a[j].key < a[j - 1].key) {
                     x = a[j - 1];
                     a[j - 1] = a[j];
                     a[j] = x;
+                    was = true;
                 }
+                if (!was) break;
+            }
+        }
         long endTime=System.nanoTime();
         return endTime-startTime;
     }
