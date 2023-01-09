@@ -12,7 +12,7 @@ public class CTracker extends EfficientSorting {
                 else l=m+1;
                 compare++;
             }
-            for (j=i-1; j>l; j--) {a[j+1]=a[j]; assign++;}
+            for (j=i; j>l; j--) {a[j]=a[j-1]; assign++;}
             a[l]=x; assign++;
         }
         long c[]=new long[2];
@@ -35,16 +35,23 @@ public class CTracker extends EfficientSorting {
     }
     static long[] BubbleSortC(item a[]) {
         item x;
+        boolean was;
         int n=a.length, compare=0,assign=0;
-        for (int i = 1; i < n; i++) {
-            for (int j = n - 1; j >= i; j--) {
-                if (a[j].key < a[j - 1].key) {
-                    x = a[j - 1]; a[j - 1] = a[j]; a[j] = x;
-                    assign += 3;
+
+            for (int i = 1; i <= n; i++) {
+                was=false;
+                for (int j = n - 1; j >= i; j--) {
+                    if (a[j].key < a[j - 1].key) {
+                        x = a[j - 1];
+                        a[j - 1] = a[j];
+                        a[j] = x;
+                        assign += 3;
+                        was = true;
+                    }
+                    compare++;
                 }
-                compare++;
+                if (!was) break;
             }
-        }
         long c[]=new long[2];
         c[0]=compare;c[1]=assign;
         return c;
