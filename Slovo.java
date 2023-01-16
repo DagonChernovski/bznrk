@@ -4,11 +4,9 @@ import java.io.*;
 //import java.util.Arrays;
 import java.util.*;
 
-//import static com.company.speech.*;
+import static com.company.position.*;
 
-
-//enum speech {unknown, noun, adj, verb, interj, adverb};
-
+enum position {left, center, right};
 public class Main {
     static void ReadFrom(File f, List<String> w) {
         try {
@@ -25,21 +23,40 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-    public static List<String> FindWord(String mask, List<String> w) {
-        //if (!mask.contains("%"))
+    public static boolean MaskCheck(String mask, String w) {
+        boolean thiz = true;
+        if (mask.length()>w.length()) return false;
+        for (int j = 0; j < mask.length(); j++) {
+            if (mask.charAt(j) == '_') continue;
+            if (mask.charAt(j) != w.charAt(j)) {
+                thiz = false;
+                break;
+            }
+        }
+        return thiz;
+    }
+    public static List<String> FindWord(String mask, List<String> w, position pos, int _len) {
         boolean thiz = false;
+        int len = _len;
         List<String> ret = new ArrayList<>();
         for (int i = 0; i < w.size(); i++) {
-            if (mask.length() == w.get(i).length()) {
-                thiz = true;
-                //System.out.print(w.get(i).word +"\n");
-                for (int j = 0; j < mask.length(); j++) {
-                    if (mask.charAt(j) == '_') continue;
-                    if (mask.charAt(j) != w.get(i).charAt(j)) {
-                        thiz = false;
+            if (_len==-1)
+                len=w.get(i).length();
+            if (len == w.get(i).length() && mask.length()<len) {
+                switch (pos) {
+                    case left:
+                        thiz = MaskCheck(mask, w.get(i));//.substring(0, len-1));
                         break;
-                    }
+                    case right:
+                        thiz = MaskCheck(mask, w.get(i).substring(w.get(i).length() - mask.length()));
+                        break;
+                    case center:
+                        for (int j = 0; j <= len - mask.length(); j++) {
+                            System.out.println(w.get(i).substring(j, j + mask.length()));
+                            thiz = MaskCheck(mask, w.get(i).substring(j, j + mask.length()));
+                            if (thiz) break;
+                        }
+                        break;
                 }
             }
             if (thiz) {
@@ -49,7 +66,6 @@ public class Main {
         }
         return ret;
     }
-
     public static int locateWord(String word, List<String> list) {
         if (!list.contains(word)) return -1;
         int left=0, right=list.size()-1;
@@ -70,7 +86,8 @@ public class Main {
         }
         return pivot;
     }
-    public static void addWord(String word, List<String> list) {
+    public static void addWord(String word, List<String> list) { //добавление слова в список с последующей сортировкой
+        if (list.contains(word)) return;
         int left=0, right=list.size()-1;
         int pivot=(left+right)/2;
         do {
@@ -91,7 +108,7 @@ public class Main {
         list.add(pivot,word);
     }
 
-    public static char C2S(String a, String b) {
+    public static char C2S(String a, String b) { //посимвольное сравнение строк
         int aa = a.length();
         int bb = b.length();
         for (int i = 0; i < (aa < bb ? aa : bb); i++) {
@@ -103,13 +120,23 @@ public class Main {
         return '=';
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void SaveTo(List<String> words, File f) { //сохранить в файл по директории
+        try (FileWriter writer=new FileWriter(f, true)) {
+            for (String s: words) {writer.write(s); writer.append('\n');}
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
         List<String> words = new ArrayList<>();
-        String filename = "D:\\Work\\WordSearchNetwork\\src\\slova.txt";
+        boolean extendedSearch =true;
+        String filename = "C:\\Users\\denpo\\IdeaProjects\\WerdFinder\\russian_nouns.txt";
         File f = new File(filename);
         //System.out.println("Reading from: "+filename);
         ReadFrom(f, words);
-        System.out.println("Допро пожаловать в систему \"поиск слов\"!\n" +
+        System.out.println("Добро пожаловать в систему \"поиск слов\"!\n" +
                 " На данный момент в базе хранится " + words.size() + " слов.\n" +
                 "Для получения информации об использовании информационной системы введите /помощь.");
         Scanner sc = new Scanner(System.in);
@@ -117,7 +144,7 @@ public class Main {
             String input = sc.nextLine();
             if (input.length()<1) continue;
             if (input.charAt(0) != '/') {
-                System.out.println("Введите /маска для поиска по маске");
+                System.out.println("Введите /поиск для поиска по маске");
                 continue;
             }
             if (input.equals("/инфо")) {
@@ -125,20 +152,73 @@ public class Main {
             }
             if (input.equals("/помощь")) {
                 System.out.println("Список команд:\n " +
-                        "/помощь - собственно помощь\n" +
+                        "/помощь - собственно список команд\n" +
+                        "/сохранить - сохранить текущую базу\n" +
+                        "/сохркак - сохранить словарь в указанный файл\n" +
                         "/маска или /поиск - поиск слова по заданной маске через буквы и '_'\n" +
                         "/меню - выход из поиска по маске\n" +
                         "/добавить - добавление слова\n" +
                         "/удалить - удаление слова\n" +
                         "/стоп - остановить программу");
             }
-            if (input.equals("/маска")) {
+            if (input.equals("/настройки")) {
+                boolean exit=false;
                 do {
-                    System.out.println("Введите маску");
+                    System.out.println("Тип поиска:\n0 - классический\n1 - по маске\n/выход - выйти");
+                    switch (sc.nextLine()) {
+                        case "0":
+                            extendedSearch = false;
+                            break;
+                        case "1":
+                            extendedSearch = true;
+                            break;
+                        case "/выход":
+                            exit=true;
+                            break;
+                        default:
+                            break;
+                    }
+                } while (!exit);
+            }
+            position pos=center; // по умолчанию
+            int len=0;
+            if (input.equals("/поиск")) {
+                do {
+                    System.out.println("Введите маску слова");
                     do input = sc.nextLine(); while (input==null);
                     if (input.equals("/меню") || input.equals("/стоп")) break;
+                    if (extendedSearch ==true) {
+                        System.out.println("Введите длину слова (для любой длины можно ввести \"_\")");
+                        char _len = sc.nextLine().charAt(0);
+                        if (_len=='_') len=-1;
+                        else {
+                            if (_len<'0' && _len>'9') {
+                                System.out.println("Ошибка ввода: поиск прерван");
+                                break;
+                            }
+                            len = Integer.parseInt(String.valueOf(_len));
+                            if (len < input.length()) {
+                                System.out.println("Ошибка данных");
+                                break;
+                            }
+                        }
+                        System.out.println("Введите позицию маски (left, center, right)");
+                        switch (sc.nextLine())
+                        {
+                            case "left":
+                                pos=left;
+                                break;
+                            case "right":
+                                pos=right;
+                                break;
+                            case "center":
+                                pos=center;
+                                break;
+                        }
+                    }
+                    else len=input.length();
                     System.out.println("Подождите, пожалуйста...");
-                    List<String> found = FindWord(input, words);
+                    List<String> found = FindWord(input, words, pos, len);
                     System.out.println("Найдено слов: " + found.size());
                     for (String s : found) {
                         System.out.println(s);
@@ -172,21 +252,17 @@ public class Main {
                     default: break;
                 }
             }
+            if (input.equals("/сохранить")) {
+                System.out.println("Сохранить файл? (да, нет)");
+                SaveTo(words, f);
+            }
+            if (input.equals("/сохркак")) {
+                System.out.println("Введите название файла (директория C:\\Users\\denpo\\IdeaProjects\\WerdFinder\\");
+                String fname2="C:\\Users\\denpo\\IdeaProjects\\WerdFinder\\"+sc.nextLine();
+                File f2=new File(fname2);
+                SaveTo(words,f2);
+            }
             if (input.equals("/стоп")) break;
         } while (true);
     }
 }
-
-/*static void sift(List<String> a, int n, int i) {
-        int max = i;
-        int l = 2 * i + 1;
-        int r = 2 * i + 2;
-        if (l < n && C2S(a.get(l), a.get(max)) == '>') max = l;
-        if (r < n && C2S(a.get(r), a.get(max)) == '>') max = r;
-        if (max != i) {
-            String temp = a.get(i);
-            a.set(i, a.get(max));
-            a.set(max, temp);
-            sift(a, n, max);
-        }
-    }*/
