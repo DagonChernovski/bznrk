@@ -1,81 +1,73 @@
-package com.company;
+// GottaLetEmGo.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
+//
 
-import java.util.Stack;
+#include <iostream>
+#include <time.h>
 
-public class Main {
+struct node {
+	std::string data;
+	struct node* next;
+};
 
-    public static class node {
-        Integer key;
-        node left, right;
+class list {
+	node *head, *tail;
+	int size;
+public:
+	list() : head(NULL), tail(NULL), size(0) {};
+	void Add(std::string x);
+	void Delete(std::string x);
+	void Print();
+};
 
-        public node(int key) {
-            this.key = key;
-            this.left = null;
-            this.right = null;
-        }
-    }
-    public static class Tree {
-        private node rootNode;
-        int elems;
-        public Tree() {
-            rootNode = null;
-        }
-        public void addElem(int key) {
-            node n=new node(key);
-            if (rootNode==null) rootNode=n;
-                else {
-                node current=rootNode;
-                node parent;
-                while (true) {
-                    parent = current;
-                    if (key == current.key) return;
-                    else if (key < current.key) {
-                        current = current.left;
-                        if (current == null) {
-                            parent.left = n;
-                            elems++;
-                            return;
-                        }
-                    }
-                    else {
-                        current = current.right;
-                        if (current == null) {
-                            parent.right = n;
-                            elems++;
-                            return;
-                        }
-                    }
-                }
-                }
-            }
-            public void TreeToArray() {
-                int[] ret=new int[100000];
-                int i=0;
-                node current=rootNode;
-                node parent;
-                while (i<elems) {
-                    parent = current;
-                    if (current.left!=null) {
-                        current = current.left;
-                        }
-                    else {
-                        ret[i]=current.key;
-                        i++;
-                        if (current.right!=null)
-                        current = current.right;
-                        if (current == null) {
-                            parent.right = n;
-                            return;
-                        }
-                    }
-            }
-        }
-        public static void main(String[] args) {
-        int[] array = new int[100000];
-        for (int i = 0; i < 100000; i++)
-            array[i] = (int) (Math.random() * 1000000);
-        Tree tree = new Tree();
-        for (int i = 0; i < 32; i++)
-            tree.addElem(array[i]);
-    }
+void list::Add(std::string x) {
+	size++;
+	node* temp = new node;
+	temp->next = head;
+	temp->data = x;
+	if (head != NULL) {
+		tail->next = temp;
+		tail = temp;
+	}
+	else head = tail = temp;
+}
+
+void list::Delete(std::string x) {
+	node* temp = new node;
+	while ()
+}
+
+void list::Print() {
+	node* p = head;
+	for (int i=0; i<size; i++) {
+		printf("%s ", p->data);
+		p = p->next;
+	}
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	srand(time(NULL));
+	std::string soldiers[6] = {
+		"Миндаль Иванович","Курага Михайловна", "Кокос Сидорович",
+		"Морковь Патрикеевна", "Изюм Вениаминович", "Розмарин Великий" };
+	printf("Init attempt:");
+	list *a = new list(); a->Add("Фундук Петрович");
+	printf("INIT SUCCESS");
+	list* b;
+	int r;
+	for (int i = 0; i < 6; i++)
+		a->Add(soldiers[i]);
+	printf("Изначальный список солдат:");
+	a->Print();
+	for (int i = 0; i < 5; i++) {
+		r = 13 * rand() / int(RAND_MAX);
+		b = a->next;
+		for (int j = 0; j < r; j++) {
+			b = b->next;
+		}
+		a->Delete(b);
+		printf("\n\nСолдат %d выходит из строя!\nТекущий список солдат\n:", b->data);
+		listprint(a);
+	}
 }
