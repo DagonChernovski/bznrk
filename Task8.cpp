@@ -3,83 +3,106 @@
 
 #include <iostream>
 #include <time.h>
+#include <stdexcept>
+#include <stdlib.h>
+#include <limits.h>
+using namespace std;
 
-struct list {
-	int data;
-	struct list* next;
+struct node {
+	const char* data;
+	struct node* next;
 };
 
-struct list* init(int a) {
-	struct list* lst;
-	lst = (struct list*)malloc(sizeof(struct list));
-	lst->data = a;
-	lst->next = lst;
-	return(lst);
+class list {
+public:
+	node* head, * tail;
+	int size;
+	list() : head(NULL), tail(NULL), size(0) {};
+	const char* GetHead();
+	void Add(const char* x);
+	node* FindName(const char* name);
+	node* DeleteCount(node *name, int n);
+	void Print();
+};
+
+const char* list::GetHead() {
+	return head->data;
 }
 
-struct list* addelem(list* lst, std::string n) {
-	struct list* temp, * p;
-	temp = (struct list*)malloc(sizeof(list));
-	p = lst->next;
-	lst->next = temp;
-	temp->data = n;
-	temp->next = p;
-	return(temp);
+void list::Add(const char* x) {
+	size++;
+	node* temp = new node;
+	temp->next = head;
+	temp->data = x;
+	if (head != NULL) {
+		tail->next = temp;
+		tail = temp;
+	}
+	else head = tail = temp;
 }
 
-struct list* deletelem(list* lst) {
-	struct list* temp;
-	temp = lst;
-	while (temp->next != lst) temp = temp->next;
-	temp->next = lst->next;
-	free(lst);
+node* list::FindName(const char* name) {
+	node* temp = head;
+	int i = 0;
+	while ((temp->data) != name && i <= size) {
+		temp = temp->next; i++;
+	}
+	if (temp->data != name) throw runtime_error("Error: name not found\n");
 	return temp;
 }
 
-void listprint(list* lst) {
-	struct list* p;
-	p = lst;
-	do {
-		printf("%s ", &p->data);
+node* list::DeleteCount(node * name, int n) {
+	node* temp = name;
+	printf("Счёт ведется начиная с имени %s до %d. \n", name->data, n);
+	for (int i = 1; i < n-1; i++) {
+		printf("%d - %s\n", i, temp->data);
+		temp = temp->next;
+	}
+	printf("%d - %s\n", n-1, temp->data);
+	printf("\n\n%d-ый солдат %s выходит из строя!\n", n, temp->next->data);
+	node* del = temp->next;
+	temp->next = del->next;
+	node* ret = del->next;
+	if (del == head) {
+		head = del->next; tail = del->next;
+	}
+	delete del;
+	size--;
+	return ret;
+}
+
+void list::Print() {
+	node* p = head;
+	for (int i = 0; i < size; i++) {
+		printf("%s\n", p->data);
 		p = p->next;
-	} while (p != lst);
+	}
 }
 
 int main()
 {
 	setlocale(LC_ALL, "Russian");
 	srand(time(NULL));
-	std::string soldiers[6] = { 
-		"Миндаль Иванович","Курага Михайловна", "Кокос Сидорович", 
-		"Морковь Патрикеевна", "Изюм Вениаминович", "Розмарин Великий" };
-	printf("Init attempt:");
-	list *a = init("Фундук Петрович");
-	printf("INIT SUCCESS");
-	list *b;
-	int r;
-	for (int i = 0; i < 6; i++)
-		a = addelem(a, soldiers[i]);
-	printf("Изначальный список солдат:");
-	listprint(a);
-	for (int i = 0; i < 5; i++) {
-		r = 13 * rand() / int(RAND_MAX);
-		b = a->next;
-		for (int j = 0; j < r; j++) {
-			b = b->next;
-		}
-		deletelem(b);
-		printf("\n\nСолдат %d выходит из строя!\nТекущий список солдат\n:", &b->data);
-		listprint(a);
+	const int len = 12; //длина массива
+	const char* soldiers[len] = {
+	"Фундук Петрович", "Миндаль Иванович", "Розмарин Великий", "Шоколад Горячевский",
+	"Анекдот Старомодный", "Зверь Сергеев", "Карл Великий-Второй", "Алексей Веслов", 
+	"Василий Корнеев", "Михаил Лобачевский", "Бублик Собачевский", "Ванилий Розмаринович"};
+	list* a = new list();
+	const char* name = "Шоколад Горячевский";
+	for (int i = 0; i < len; i++)
+		a->Add(soldiers[i]);
+	printf("Изначальный список солдат:\n");
+	a->Print();
+	int r = 20 * rand() / int(RAND_MAX);
+	node* n;
+	try {n = a->FindName(name);}
+	catch (exception ex) { printf("Exception: %s", ex); n = a->head; }
+	for (int i = 1; i < len; i++) {
+		n=a->DeleteCount(n, r);
+		printf("\nТекущий список солдат:\n");
+		a->Print();
 	}
+	printf("В конце концов %s остался один.\n Спустя некоторое время скука и нехватка еды вынудили его выбежать на поле боя за компанию.\nТак и закончилась история.",
+		a->GetHead());
 }
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
