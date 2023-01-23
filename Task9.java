@@ -5,13 +5,21 @@ import java.util.Stack;
 public class Main {
 
     public static class node {
-        Integer key;
-        node left, right;
+        Integer key, balance;
+        node left, right, parent;
 
         public node(int key) {
             this.key = key;
             this.left = null;
             this.right = null;
+            this.parent=null;
+        }
+        public void countBalance() {
+            node current = this;
+            while (current.parent != null) {
+                current.balance++;
+                current = current.parent;
+            }
         }
     }
     public static class Tree {
@@ -33,7 +41,8 @@ public class Main {
                         current = current.left;
                         if (current == null) {
                             parent.left = n;
-                            elems++;
+                            parent.left.parent = parent;
+                            current.countBalance();
                             return;
                         }
                     }
@@ -41,7 +50,8 @@ public class Main {
                         current = current.right;
                         if (current == null) {
                             parent.right = n;
-                            elems++;
+                            parent.right.parent = parent;
+                            current.countBalance();
                             return;
                         }
                     }
