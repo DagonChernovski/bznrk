@@ -10,9 +10,10 @@ public class Main {
 
         public node(int key) {
             this.key = key;
+            this.balance=0;
             this.left = null;
             this.right = null;
-            this.parent=null;
+            this.parent = null;
         }
         public void countBalance() {
             node current = this;
@@ -24,7 +25,6 @@ public class Main {
     }
     public static class Tree {
         private node rootNode;
-        int elems;
         public Tree() {
             rootNode = null;
         }
@@ -42,7 +42,7 @@ public class Main {
                         if (current == null) {
                             parent.left = n;
                             parent.left.parent = parent;
-                            current.countBalance();
+                            parent.left.countBalance();
                             return;
                         }
                     }
@@ -51,7 +51,7 @@ public class Main {
                         if (current == null) {
                             parent.right = n;
                             parent.right.parent = parent;
-                            current.countBalance();
+                            parent.right.countBalance();
                             return;
                         }
                     }
@@ -59,11 +59,11 @@ public class Main {
             }
         }
         public int[] TreeToArray() {
-            int[] ret=new int[16];
+            int[] ret=new int[32];
             int i=0;
             node current=rootNode;
             Stack<node> nodes=new Stack();
-            while (i<elems) {
+            do {
                 nodes.add(current);
                 if (current.left!=null) {if (ret[i]<current.left.key)
                     current = current.left; else current.left=null;}
@@ -73,7 +73,8 @@ public class Main {
                         current = current.right;
                     else {nodes.pop();}
                     }
-                } return ret;
+                } while (!nodes.empty());
+            return ret;
             }
         }
         public static void main(String[] args) {
