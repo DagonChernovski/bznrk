@@ -3,7 +3,7 @@ package com.company;
 import java.util.Stack;
 
 public class Main {
-
+    static int ln=10000000;
     public static class node {
         Integer key, balance;
         node left, right, parent;
@@ -22,6 +22,32 @@ public class Main {
                 current = current.parent;
             }
         }
+        public void RotateLeft(node l) {
+            node rbranch=right;
+            node lbranch=left;
+            left=this;
+            key=right.key;
+            right=rbranch.right;
+        }
+        public int[] TreeToArr() {
+            int aa[]=null, bb[]=null, a=0, b=0;
+            if (this.left!=null) {
+                aa = this.left.TreeToArr();
+                a=aa.length;
+            }
+            if (this.right!=null) {
+                bb = this.right.TreeToArr();
+                b=bb.length;
+                }
+            int ret[]=new int[a+b+1];
+            for (int i=0; i<a; i++) {
+                ret[i]=aa[i];
+            }
+            ret[a]=key;
+            for (int i=0; i<b; i++)
+                ret[i+a+1]=bb[i];
+            return ret;
+        }
     }
     public static class Tree {
         private node rootNode;
@@ -36,8 +62,8 @@ public class Main {
                 node parent;
                 while (true) {
                     parent = current;
-                    if (key == current.key) return;
-                    else if (key < current.key) {
+                    //if (key == current.key) return; else
+                    if (key < current.key) {
                         current = current.left;
                         if (current == null) {
                             parent.left = n;
@@ -58,34 +84,26 @@ public class Main {
                 }
             }
         }
-        public int[] TreeToArray() {
-            int[] ret=new int[32];
-            int i=0;
-            node current=rootNode;
-            Stack<node> nodes=new Stack();
-            do {
-                nodes.add(current);
-                if (current.left!=null) {if (ret[i]<current.left.key)
-                    current = current.left; else current.left=null;}
-                else {
-                    ret[i]=current.key; i++;
-                    if (current.right!=null) if (ret[i]<current.right.key)
-                        current = current.right;
-                    else {nodes.pop();}
-                    }
-                } while (!nodes.empty());
-            return ret;
-            }
-        }
-        public static void main(String[] args) {
-            int[] array = new int[16];
-            for (int i = 0; i < 16; i++)
-                array[i] = (int) (Math.random() * 1000);
-            Tree tree = new Tree();
-            for (int i = 0; i < 16; i++)
-                tree.addElem(array[i]);
-            int[] sorted = tree.TreeToArray();
-            for (int i=0; i < 16; i++)
-                System.out.println(sorted[i]);
+        public void Delete(node el) {
+            node q=el;
+            if (el.right!=null) Delete(el.right);
+            else {q.key=el.key; //? needed or not
+            q=el; el=el.left;}
+            if (el==null) return;
+            else if (el.left!=null) Delete(el.left);
+            else {q.key=el.key; //? needed or not
+                q=el; el=el.right;}
         }
     }
+    public static void main(String[] args) {
+        int[] array = new int[ln];
+        for (int i = 0; i < ln; i++)
+            array[i] = (int) (Math.random() * 1000000);
+        Tree tree = new Tree();
+        for (int i = 0; i < ln; i++)
+            tree.addElem(array[i]);
+        int[] sorted = tree.rootNode.TreeToArr();
+        for (int i=0; i < sorted.length; i++)
+            System.out.println(sorted[i]);
+    }
+}
