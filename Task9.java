@@ -23,7 +23,7 @@ public class Main {
         public void addElem(int key) {
             node n=new node(key);
             if (rootNode==null) rootNode=n;
-                else {
+            else {
                 node current=rootNode;
                 node parent;
                 while (true) {
@@ -46,36 +46,35 @@ public class Main {
                         }
                     }
                 }
-                }
             }
-            public void TreeToArray() {
-                int[] ret=new int[100000];
-                int i=0;
-                node current=rootNode;
-                node parent;
-                while (i<elems) {
-                    parent = current;
-                    if (current.left!=null) {
-                        current = current.left;
-                        }
-                    else {
-                        ret[i]=current.key;
-                        i++;
-                        if (current.right!=null)
+        }
+        public int[] TreeToArray() {
+            int[] ret=new int[16];
+            int i=0;
+            node current=rootNode;
+            Stack<node> nodes=new Stack();
+            while (i<elems) {
+                nodes.add(current);
+                if (current.left!=null) {if (ret[i]<current.left.key)
+                    current = current.left; else current.left=null;}
+                else {
+                    ret[i]=current.key; i++;
+                    if (current.right!=null) if (ret[i]<current.right.key)
                         current = current.right;
-                        if (current == null) {
-                            parent.right = n;
-                            return;
-                        }
+                    else {nodes.pop();}
                     }
+                } return ret;
             }
         }
         public static void main(String[] args) {
-        int[] array = new int[100000];
-        for (int i = 0; i < 100000; i++)
-            array[i] = (int) (Math.random() * 1000000);
-        Tree tree = new Tree();
-        for (int i = 0; i < 32; i++)
-            tree.addElem(array[i]);
+            int[] array = new int[16];
+            for (int i = 0; i < 16; i++)
+                array[i] = (int) (Math.random() * 1000);
+            Tree tree = new Tree();
+            for (int i = 0; i < 16; i++)
+                tree.addElem(array[i]);
+            int[] sorted = tree.TreeToArray();
+            for (int i=0; i < 16; i++)
+                System.out.println(sorted[i]);
+        }
     }
-}
