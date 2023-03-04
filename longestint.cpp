@@ -37,8 +37,6 @@ template <typename T>std::string toString(T val)
 
 class longestint {
 protected:
-	//char* mynumber; //WTF why not std string? I needcha try both though.
-	//mynumber=(char*)calloc(10, sizeof(char)) ; //stored invertedly no worries
 	std::string mynumber;
 	size_t length = 0;
 public:
@@ -47,22 +45,13 @@ public:
 		std::string c;
 		mynumber = toString(i);
 		std::reverse(mynumber.begin(), mynumber.end());
-		//int ii = i;
-		//do {
-		//	c=char(ii % 10 + 48);
-		//	mynumber.append(c);
-		//	//cout << c << "   " << c << endl; //debug
-		//	ii /= 10; length += sizeof(char);
-		//} while (ii != 0);
 	}
 	longestint(char t[])
 	{
-		//if (sizeof(t) > sizeof(mynumber)) {int abs = sizeof(t) - sizeof(mynumber);
 		mynumber = t;
 	}
 	longestint() { //default constructor
 		mynumber.append(" ");
-		//возможно придется юзать null-озаменитель но хер знает как это в плюсах будет работать
 	}
 	longestint operator + (const longestint);
 	longestint operator * (const longestint);
@@ -108,7 +97,6 @@ longestint longestint::operator + (const longestint a) {
 		b_int = (short)b[i] - 48;
 		s = toString((char)((a_int + b_int + next) % 10 + 48)); ret.mynumber.append(s); ret.length++; //maybe easier to rewrite using an array of byte numbers idk
 		next = (a_int + b_int) / 10;
-		printf("ITER %d --- %d %d %d\n", i, a_int, b_int, next);
 	}
 	if (a.length > b.length()) b = a.mynumber;
 	for (int i = min; i < max; i++) {
