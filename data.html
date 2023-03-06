@@ -12,14 +12,17 @@ p {
 <script type="text/javascript">
 let hours=12, minutes=35, secs=00;
 let alHours = 12, alMinutes = 00;
-let alarm=False;
-let elements = document.querySelectorAll(".item__inner");
+let alarm=false;
+let hh = document.querySelectorAll(".item__inner");
+let mm = document.querySelectorAll(".item__inner");
 while (true) {
 	while (!alarm) {
-		secs++; if (secs>60) {secs=0; minutes++;} sleep(1000);
+		secs++; if (secs>60) {secs=0; minutes++;} Thread.sleep(1000); hh=hours; mm=minutes;
+		console.log(hh);
+		console.log(mm);
 	}
 	while (alarm) {
-		
+		hh=alHours; mm=alMinutes;
 	}
 }
 
