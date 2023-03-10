@@ -6,26 +6,30 @@ class JThread extends Thread{
     public void run(){
         String curThread = Thread.currentThread().getName();
         System.out.printf("%s started... \n", curThread);
-        for (int i = (int) ((int) Math.pow(10, Main.n - 1) + (Math.pow(10, Main.n)/ (Main.numthreads) * (Integer.parseInt(curThread.substring(7, 8)) + 1))); i < Math.pow(10, Main.n) - (Math.pow(10, Main.n)/ (Main.numthreads) * (Integer.parseInt(curThread.substring(7, 8)) + 1)); i++)
+        long start=(long)Math.pow(10, Main.n - 1), end=(long)Math.pow(10, Main.n);
+        int range=Integer.parseInt(curThread.substring(7));
+        for (long i = (long) (start + (Math.pow(10, Main.n)/ (Main.numthreads) * range) + 1);
+             i <              start + (Math.pow(10, Main.n)/ (Main.numthreads) * (range+1)); i++)
         {
-            int temp = i;
+            //i перебирается от 10^14
+            long temp = i;
             boolean flag = true;
             for (int j = 1; j < Main.n / 2 + 1; j++)
             {
-                int a = temp % 10;
-                int b = temp / 10 % 10;
+                long a = temp % 10;
+                long b = temp / 10 % 10;
                 if ((a != 0 && b != 0) && (Math.abs(a - b) == 1))
-                    temp = temp / 100;
+                temp = temp / 100;
                 else flag = false;
             }
             if (flag) {
-                int d = i % 2;
+                long d = i % 2;
                 //System.out.println(d + " /" + i);
-
                 if (d == 0) Main.evencount++;
                 else Main.oddcount++;
+                System.out.printf("%s %d\n", curThread, i);
             }
-
+            //System.out.printf("%d ", i);
         }
         //System.out.println(Main.evencount);
 
@@ -36,24 +40,28 @@ class RunnableThread implements Runnable{
     public void run(){
         String curThread = Thread.currentThread().getName();
         System.out.printf("%s started... \n", curThread);
-        for (int i = (int) ((int) Math.pow(10, Main.n - 1) + (Math.pow(10, Main.n)/ (Main.numthreads) * (Integer.parseInt(curThread.substring(7, 8)) + 1))); i < Math.pow(10, Main.n) - (Math.pow(10, Main.n)/ (Main.numthreads) * (Integer.parseInt(curThread.substring(7, 8)) + 1)); i++)
+        long start=(long)Math.pow(10, Main.n - 1), end=(long)Math.pow(10, Main.n);
+        int range=Integer.parseInt(curThread.substring(7));
+        for (long i = (long) (start + (Math.pow(10, Main.n)/ (Main.numthreads) * range) + 1);
+             i <              start + (Math.pow(10, Main.n)/ (Main.numthreads) * (range+1)); i++)
         {
-            int temp = i;
+            long temp = i;
             boolean flag = true;
             for (int j = 1; j < Main.n / 2 + 1; j++)
             {
-                int a = temp % 10;
-                int b = temp / 10 % 10;
+                long a = temp % 10;
+                long b = temp / 10 % 10;
                 if ((a != 0 && b != 0) && (Math.abs(a - b) == 1))
-                    temp = temp / 100;
+                {temp = temp / 100;}
                 else flag = false;
             }
             if (flag) {
-                int d = i % 2;
+                long d = i % 2;
                 //System.out.println(d + " /" + i);
 
                 if (d == 0) Main.evencount++;
                 else Main.oddcount++;
+
             }
 
         }
@@ -62,10 +70,10 @@ class RunnableThread implements Runnable{
 }
 
 public class Main {
-    public static int evencount = 0;
-    public static int oddcount = 0;
-    public static int n = 8;
-    public static int numthreads = 1;
+    public static long evencount = 0;
+    public static long oddcount = 0;
+    public static int n = 10;
+    public static int numthreads = 64;
     static Thread[] ThreadArr = new Thread[numthreads];
     static Thread[] RunnableArr = new Thread[numthreads];
     public static void main(String[] args){
@@ -95,9 +103,7 @@ public class Main {
             long endtime = System.currentTimeMillis();
             long elapsed = endtime - starttime;
             System.out.println("Working time: " + elapsed + "ms.");
-
             System.out.println("-----------------------------------");
-
             evencount = 0;
             oddcount = 0;
             starttime = System.currentTimeMillis();
@@ -109,10 +115,9 @@ public class Main {
             };
             for (int i = 0; i < numthreads; i++)
             {
-                try{
+                try {
                     RunnableArr[i].join();
-
-                }catch(Exception e){System.out.println(e);}
+                } catch(Exception e) {System.out.println(e);}
             }
             endtime = System.currentTimeMillis();
             elapsed = endtime - starttime;
