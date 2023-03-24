@@ -1,15 +1,17 @@
-    class JThread extends Thread{
+package com.company;
+
+class JThread extends Thread{
         /*JThread(String name){
             super();
         }*/
     
         public void run(){
             String curThread = Thread.currentThread().getName();
-            long preStart=(long)Math.pow(10, Main.n - 1);
+            long preStart=(long)Math.pow(10, Main.n - 1); //первое
             long preEnd=(long)(Math.pow(10, Main.n)-Math.pow(10, Main.n - 1));
             int range=Integer.parseInt(curThread.substring(7));
-            long start= (long) (preStart + preEnd/ Main.numthreads * range),
-                    end=(long) (preStart + preEnd/ Main.numthreads * (range+1));
+            long start = (preStart + preEnd/ Main.numthreads * range),
+                    end = (preStart + preEnd/ Main.numthreads * (range+1));
             if (end>Math.pow(10, Main.n)) end=(long)Math.pow(10, Main.n);
             System.out.println(curThread+" started... - from "+ start+" "+end);
             for (long i = start; i < end; i++)
@@ -40,6 +42,11 @@
     }
     
     class RunnableThread implements Runnable{
+    //private int n, nt;
+        public RunnableThread(int runnables) {
+
+        }
+
         public void run(){
             String curThread = Thread.currentThread().getName();
             long preStart=(long)Math.pow(10, Main.n - 1);
@@ -77,10 +84,11 @@
     public class Main {
         public static long evencount = 0;
         public static long oddcount = 0;
-        public static int n = 8;
-        public static int numthreads = 64;
+        public static int n = 4;
+        public static int numthreads = 4;
         static Thread[] ThreadArr = new JThread[numthreads];
-        static Thread[] RunnableArr = new JThread(new RunnableThread[numthreads]);
+        static RunnableThread RunnableArr = new RunnableThread(numthreads);
+        static Thread RunnableA = new Thread(RunnableArr);
         public static void main(String[] args){
     
             if (n % 2 != 0) System.out.println("N is not a even number!");
@@ -114,14 +122,12 @@
                 starttime = System.currentTimeMillis();
                 for (int i = 0; i < numthreads; i++)
                 {
-                    RunnableArr[i] = new RunnableThread();
-                    //RunnableArr[i].setName("Thread-" + i);
                     RunnableArr[i].run();
                 };
                 for (int i = 0; i < numthreads; i++)
                 {
                     try {
-                        RunnableArr[i].join();
+                        RunnableA[i].join();
                     } catch(Exception e) {System.out.println(e);}
                 }
                 endtime = System.currentTimeMillis();
@@ -129,7 +135,7 @@
                 System.out.println("Num of even numbers: " + evencount);
                 System.out.println("Num of odd numbers: " + oddcount);
                 System.out.println("Working time: " + elapsed + "ms.");
-    
+
             }
     
         }
