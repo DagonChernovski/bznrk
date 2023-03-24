@@ -18,12 +18,12 @@ class JThread extends Thread{
             //i перебирается от 10^14
             long temp = i;
             boolean flag = true;
-            for (int j = 1; j < Main.n / 2 + 1; j++)
+            for (int j = 1; j < Main.n; j++)
             {
                 long a = temp % 10;
                 long b = temp / 10 % 10;
-                if ((a != 0 && b != 0) && (Math.abs(a - b) == 1))
-                    temp = temp / 100;
+                if (Math.abs(a-b)==1 && Math.min(a,b)!=0)
+                    temp = temp / 10;
                 else flag = false;
             }
             if (flag) {
@@ -47,38 +47,37 @@ class RunnableThread implements Runnable{
         super();
         curThread=n;
     }
-    @Override
     public void run(){
         isInterrupted=false;
-
         //System.out.println(curThread+" started...");
         long preStart=(long)Math.pow(10, Main.n - 1);
         long preEnd=(long)(Math.pow(10, Main.n)-Math.pow(10, Main.n - 1));
         int range=curThread;
-        long start= preStart + preEnd/ Main.numthreads * range,
-                end=preStart + preEnd/ Main.numthreads * (range+1);
+        long start= preStart + preEnd / Main.numthreads * range,
+                end=preStart + preEnd / Main.numthreads * (range+1);
         if (end>Math.pow(10, Main.n)) end=(long)Math.pow(10, Main.n);
         System.out.println(curThread+" started... - from "+ start+" "+end);
         for (long i = start; i < end; i++) {
             long temp = i;
             boolean flag = true;
-            for (int j = 1; j < Main.n / 2 + 1; j++)
+            for (int j = 1; j < Main.n; j++)
             {
                 long a = temp % 10;
                 long b = temp / 10 % 10;
-                if ((a != 0 && b != 0) && (Math.abs(a - b) == 1))
-                {temp = temp / 100;}
+                if (Math.abs(a-b)==1 && Math.min(a,b)!=0)
+                    temp = temp / 10;
                 else flag = false;
             }
             if (flag) {
                 long d = i % 2;
+                System.out.println(i);
                 //System.out.println(d + " /" + i);
-
                 if (d == 0) Main.evencount++;
                 else Main.oddcount++;
 
             }
         }
+        System.out.println(curThread+" finished...");
         this.interrupt();
         //System.out.println(Main.evencount);
     }
@@ -92,15 +91,13 @@ class RunnableThread implements Runnable{
 
 public class Main {
     public static long evencount = 0,oddcount = 0;
-
-    public static int n = 10, numthreads = 8;
+    public static int n = 8, numthreads = 6;
     static Thread[] ThreadArr = new JThread[numthreads];
-    static RunnableThread[] RunnableArr = new RunnableThread[numthreads];
-    //static Thread RunnableA = new Thread(RunnableArr);$56G7#
+    static Runnable[] RunnableArr = new RunnableThread[numthreads];
+    //static Thread RunnableA = new Thread(RunnableArr);
     public static void main(String[] args){
 
-        if (n % 2 != 0) System.out.println("N is not a even number!");
-        else {
+
             long starttime = System.currentTimeMillis();
             System.out.println("Main thread started...");
             //System.out.println(Math.pow(10, n - 1));
@@ -130,7 +127,7 @@ public class Main {
             for (int i = 0; i < numthreads; i++)
             {
                 try {
-                    RunnableArr[i].join();
+                    RunnableArr[i].notify();
                 } catch(Exception e) {System.out.println(e);}
             }
             endtime = System.currentTimeMillis();
@@ -138,8 +135,6 @@ public class Main {
             System.out.println("Num of even numbers: " + evencount);
             System.out.println("Num of odd numbers: " + oddcount);
             System.out.println("Working time: " + elapsed + "ms.");
-
-        }
 
     }
 
