@@ -1,9 +1,9 @@
 package com.company;
 
 class JThread extends Thread{
-        /*JThread(String name){
-            super();
-        }*/
+    /*JThread(String name){
+        super();
+    }*/
     public void run(){
         String curThread = Thread.currentThread().getName();
         long preStart=(long)Math.pow(10, Main.n - 1); //первое
@@ -36,20 +36,25 @@ class JThread extends Thread{
             //System.out.printf("%d ", i);
         }
         //System.out.println(Main.evencount);
-
+        System.out.println(curThread+" finished...");
     }
 }
 
 class RunnableThread implements Runnable{
-    private boolean isInterrupted;
+    private boolean isActive;
     private int curThread;
     public RunnableThread(int n) {
         super();
         curThread=n;
+        isActive=true;
     }
-    public void run(){
-        isInterrupted=false;
-        //System.out.println(curThread+" started...");
+    public RunnableThread() {
+        super();
+        isActive=true;
+    }
+    public void run() {
+        curThread= Integer.parseInt(Thread.currentThread().getName());
+        System.out.println(curThread+" started...");
         long preStart=(long)Math.pow(10, Main.n - 1);
         long preEnd=(long)(Math.pow(10, Main.n)-Math.pow(10, Main.n - 1));
         int range=curThread;
@@ -70,22 +75,23 @@ class RunnableThread implements Runnable{
             }
             if (flag) {
                 long d = i % 2;
-                System.out.println(i);
+                //System.out.println(i);
                 //System.out.println(d + " /" + i);
                 if (d == 0) Main.evencount++;
                 else Main.oddcount++;
-
             }
         }
-        System.out.println(curThread+" finished...");
-        this.interrupt();
+       System.out.println(curThread+" finished...");
+        this.disable();isActive=false;
         //System.out.println(Main.evencount);
     }
-    public void interrupt() {
-        isInterrupted=true;
+    public void disable() {
+        isActive=false;
     }
-    public void join() {
-        while (!isInterrupted) {};
+    public void jJoin() {
+        System.out.println(curThread+" nJoined...");
+        while (isActive) {};
+        System.out.println(curThread+" joined...");
     }
 }
 
@@ -93,48 +99,50 @@ public class Main {
     public static long evencount = 0,oddcount = 0;
     public static int n = 8, numthreads = 6;
     static Thread[] ThreadArr = new JThread[numthreads];
-    static Runnable[] RunnableArr = new RunnableThread[numthreads];
+    static RunnableThread[] RunnableArr = new RunnableThread[numthreads];
     //static Thread RunnableA = new Thread(RunnableArr);
     public static void main(String[] args){
 
 
-            long starttime = System.currentTimeMillis();
-            System.out.println("Main thread started...");
-            //System.out.println(Math.pow(10, n - 1));
-            for (int i = 0; i < numthreads; i++)
-            {
-                ThreadArr[i] = new JThread();
-                ThreadArr[i].start();
-            };
-            for (int i = 0; i < numthreads; i++)
-            {try{ThreadArr[i].join();}catch(Exception e){System.out.println(e);}}
+        long starttime = System.currentTimeMillis();
+        System.out.println("Main thread started...");
+        //System.out.println(Math.pow(10, n - 1));
+        for (int i = 0; i < numthreads; i++)
+        {
+            ThreadArr[i] = new JThread();
+            ThreadArr[i].start();
+        };
+        for (int i = 0; i < numthreads; i++)
+        {try{ThreadArr[i].join();}catch(Exception e){System.out.println(e);}}
 
-            System.out.println("Main thread finished...");
-            System.out.println("Num of even numbers: " + evencount);
-            System.out.println("Num of odd numbers: " + oddcount);
-            long endtime = System.currentTimeMillis();
-            long elapsed = endtime - starttime;
-            System.out.println("Working time: " + elapsed + "ms.");
-            System.out.println("-----------------------------------");
-            evencount = 0;
-            oddcount = 0;
-            starttime = System.currentTimeMillis();
-            for (int i = 0; i < numthreads; i++)
-            {
-                RunnableArr[i]=new RunnableThread(i);
-                RunnableArr[i].run();
-            };
-            for (int i = 0; i < numthreads; i++)
-            {
-                try {
-                    RunnableArr[i].notify();
-                } catch(Exception e) {System.out.println(e);}
-            }
-            endtime = System.currentTimeMillis();
-            elapsed = endtime - starttime;
-            System.out.println("Num of even numbers: " + evencount);
-            System.out.println("Num of odd numbers: " + oddcount);
-            System.out.println("Working time: " + elapsed + "ms.");
+        System.out.println("Main thread finished...");
+        System.out.println("Num of even numbers: " + evencount);
+        System.out.println("Num of odd numbers: " + oddcount);
+        long endtime = System.currentTimeMillis();
+        long elapsed = endtime - starttime;
+        System.out.println("Working time: " + elapsed + "ms.");
+        System.out.println("-----------------------------------");
+        evencount = 0;
+        oddcount = 0;
+        starttime = System.currentTimeMillis();
+        System.out.println("Main thread started...");
+        for (int i = 0; i < numthreads; i++)
+        {
+            RunnableArr[i]=new RunnableThread(i);
+            new Thread(RunnableArr[i], String.valueOf(i)).start();
+        };
+        for (int i = 0; i < numthreads; i++)
+        {
+            try {
+                RunnableArr[i].notify();
+            } catch(Exception e) {System.out.println(e);}
+        }
+        endtime = System.currentTimeMillis();
+        elapsed = endtime - starttime;
+        System.out.println("Main thread finished...");
+        System.out.println("Num of even numbers: " + evencount);
+        System.out.println("Num of odd numbers: " + oddcount);
+        System.out.println("Working time: " + elapsed + "ms.");
 
     }
 
