@@ -3,20 +3,15 @@ import java.util.Arrays;
 
 interface function { double calc(double x);}
 class RectangleMethod extends Thread{
-    int number = 0;
-    int count = 0;
-    double h = 0;
-    double a = 0;
-    double b = 0;
-    RectangleMethod(int num1, int num2, double num3, double num4){
+    int number,count;
+    double a,b,h=0;
+    function f;
+    RectangleMethod(int num1, int num2, double _a, double _b, function func){
         number = num1;
         count = num2;
-        a = num3;
-        b = num4;
-    }
-
-    double func(double number){
-        return (Math.pow(Math.E, number)*(1 + Math.sin(number))) / (1 + Math.cos(number));
+        a = _a;
+        b = _b;
+        f=func;
     }
     @Override
     public void run(){
@@ -24,69 +19,57 @@ class RectangleMethod extends Thread{
         double x = 0;
         for (int i = number - 1; i < count; i += Main.numthreads) {
             x = a + h * i;
-            Main.sumarray[number - 1] += (h * func(x));
+            Main.sumarray[number - 1] += (h * f.calc(x));
         }
     }
 }
 
 class TrapezoidMethod extends Thread{
-    int number = 0;
-    int count = 0;
-    double h = 0;
-    double a = 0;
-    double b = 0;
-    TrapezoidMethod(int num1, int num2, double num3, double num4 ){
+    int number,count;
+    double a,b,h=0;
+    function f;
+    TrapezoidMethod(int num1, int num2, double _a, double _b, function func){
         number = num1;
         count = num2;
-        a = num3;
-        b = num4;
-    }
-
-    double func(double number){
-        return (Math.pow(Math.E, number)*(1 + Math.sin(number))) / (1 + Math.cos(number));
+        a = _a;
+        b = _b;
+        f=func;
     }
     @Override
     public void run(){
         h = (b - a) / count;
         double x = 0;
-            if (number == 1) Main.sum += (func(a)+ func(a + h * count)) / 2;
+            if (number == 1) Main.sum += (f.calc(a)+ f.calc(a + h * count))/2;
             for (int i = number - 1; i < count - 1; i += Main.numthreads) {
                 x = a + h * i;
-                Main.sumarray[number - 1] += (func(x));
+                Main.sumarray[number - 1] += (f.calc(x));
             }
-
     }
 }
 
 class SimpsonMethod extends Thread{
-    int number = 0,count = 0;
-    double h = 0,a = 0,b = 0;
-    SimpsonMethod(int num1, int num2, double num3, double num4){
+    int number,count;
+    double a,b,h=0;
+    function f;
+    SimpsonMethod(int num1, int num2, double _a, double _b, function func) {
         number = num1;
         count = num2;
-        a = num3;
-        b = num4;
-    }
-
-    double func(double number){
-        return (Math.pow(Math.E, number)*(1 + Math.sin(number))) / (1 + Math.cos(number));
+        a = _a;
+        b = _b;
+        f = func;
     }
     @Override
     public void run(){
         h = (b - a) / count;
         double x = 0;
-            if (number == 1) Main.sum += func(a) + func(b);
+            if (number == 1) Main.sum += f.calc(a) + f.calc(b);
             for (int i = number - 1; i < count - 1; i += Main.numthreads) {
                 x = a + h * i;
-                if (i % 2 == 0) Main.sumarray[number - 1] += (func(x));
-                else Main.sumarray2[number - 1] += (func(x));
+                if (i % 2 == 0) Main.sumarray[number - 1] += (f.calc(x));
+                else Main.sumarray2[number - 1] += (f.calc(x));
             }
-
     }
 }
-
-
-
 
 public class Main {
     //public static AtomicInteger sum = new AtomicInteger(0);
@@ -98,19 +81,23 @@ public class Main {
     static double[] sumarray = new double[numthreads];
 
     static double[] sumarray2 = new double[numthreads];
-
+    static function ff=(x)->(Math.pow(Math.log(x),2)/x); // function interface
+    static double a=1, b=4; //integral edges
     public static double sum1 = 0, sum2 = 0;
     public static void main(String[] args) {
         System.out.println("-----------------------------------");
         System.out.println("Rectangle Method");
         System.out.println("-----------------------------------");
+
+                //(Math.pow(Math.E, x)*(1 + Math.sin(x))) / (1 + Math.cos(x));
+                //(x)->(Math.pow(Math.log(x),2)/x);
         for (int j = 0; j < threadnum.length ; j++) {
             sum = 0;
             numthreads = threadnum[j];
             sumarray = new double[numthreads];
             long starttime = System.currentTimeMillis();
             for (int i = 0; i < numthreads; i++) {
-                ThreadArr.add(i, new RectangleMethod(i + 1, (int)1e8, 0, 1.5));
+                ThreadArr.add(i, new RectangleMethod(i + 1, (int)1e8, a, b, ff));
                 //ThreadArr[i].setName("Thread-" + i);
                 (ThreadArr.get(i)).start();
             }
@@ -145,7 +132,7 @@ public class Main {
             sumarray = new double[numthreads];
             long starttime = System.currentTimeMillis();
             for (int i = 0; i < numthreads; i++) {
-                ThreadArr.add(i, new TrapezoidMethod(i + 1, (int)1e8, 0, 1.5));
+                ThreadArr.add(i, new TrapezoidMethod(i + 1, (int)1e8, a, b, ff));
                 //ThreadArr[i].setName("Thread-" + i);
                 ThreadArr.get(i).start();
             }
@@ -186,7 +173,7 @@ public class Main {
             sumarray2 = new double[numthreads];
             long starttime = System.currentTimeMillis();
             for (int i = 0; i < numthreads; i++) {
-                ThreadArr.add(i, new SimpsonMethod(i + 1, (int)1e8, 0, 1.5));
+                ThreadArr.add(i, new SimpsonMethod(i + 1, (int)1e8, a, b, ff));
                 //ThreadArr[i].setName("Thread-" + i);
                 ThreadArr.get(i).start();
             }
@@ -209,10 +196,6 @@ public class Main {
             System.out.println("Working time: " + elapsed / 1000 + "s.");
             System.out.println(sum);
             System.out.println("-----------------------------------");
-
-
-
         }
-
     }
 }
