@@ -1,17 +1,21 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Semaphore;
 
 interface function { double calc(double x);}
 class RectangleMethod extends Thread {
     int threadNum,precision;
     double a,b,h=0;
     function f;
-    RectangleMethod(int _threadNo, int _p, double _a, double _b, function func) {
+    double sum=0;
+    Semaphore sem;
+    RectangleMethod(int _threadNo, int _p, double _a, double _b, function func, Semaphore sema) {
         threadNum = _threadNo;
         precision = _p;
         a = _a;
         b = _b;
         f=func;
+        sem=sema;
     }
     @Override
     public void run(){
@@ -19,30 +23,47 @@ class RectangleMethod extends Thread {
         double x = 0;
         for (int i = threadNum - 1; i < precision; i += Main.numthreads) {
             x = a + h * i;
-            Main.sumarray[threadNum - 1] += (h * f.calc(x));
+            sum += (h * f.calc(x));
         }
+        try {
+            sem.acquire();
+            Main.sums[0]+=sum;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        sem.release();
     }
 }
 class TrapezoidMethod extends Thread {
     int threadNum,precision;
     double a,b,h=0;
     function f;
-    TrapezoidMethod(int _threadNo, int _p, double _a, double _b, function func) {
+    double sum=0;
+    Semaphore sem;
+    TrapezoidMethod(int _threadNo, int _p, double _a, double _b, function func,Semaphore sema) {
         threadNum = _threadNo;
         precision = _p;
         a = _a;
         b = _b;
         f=func;
+        sem=sema;
     }
     @Override
     public void run(){
         h = (b - a) / precision;
         double x = 0;
-        if (threadNum == 1) Main.sum += (f.calc(a)+ f.calc(a + h * precision))/2;
+        if (threadNum == 1) sum += (f.calc(a)+ f.calc(a + h * precision))/2;
         for (int i = threadNum - 1; i < precision - 1; i += Main.numthreads) {
             x = a + h * i;
-            Main.sumarray[threadNum - 1] += (f.calc(x));
+            sum += (f.calc(x));
         }
+        try {
+            sem.acquire();
+            Main.sumarray[0]+=sum;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        sem.release();
     }
 }
 
@@ -50,23 +71,34 @@ class SimpsonMethod extends Thread{
     int threadNum,precision;
     double a,b,h=0;
     function f;
-    SimpsonMethod(int _threadNo, int _p, double _a, double _b, function func) {
+    double sum=0,sum1=0,sum2=0;
+    Semaphore sem;
+    SimpsonMethod(int _threadNo, int _p, double _a, double _b, function func, Semaphore sema) {
         threadNum = _threadNo;
         precision = _p;
         a = _a;
         b = _b;
         f = func;
+        sem=sema;
     }
     @Override
     public void run(){
         h = (b - a) / precision;
         double x = 0;
-        if (threadNum == 1) Main.sum += f.calc(a) + f.calc(b);
+        if (threadNum == 1) sum += f.calc(a) + f.calc(b);
         for (int i = threadNum - 1; i < precision - 1; i += Main.numthreads) {
             x = a + h * i;
-            if (i % 2 == 0) Main.sumarray[threadNum - 1] += (f.calc(x));
-            else Main.sumarray2[threadNum - 1] += (f.calc(x));
+            if (i % 2 == 0) sum1 += (f.calc(x));
+            else sum2 += (f.calc(x));
         }
+        sum+=sum1*2+sum2*4;
+        try {
+            sem.acquire();
+            Main.sums[2]+=sum;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        sem.release();
     }
 }
 
@@ -77,12 +109,13 @@ public class Main {
     static ArrayList<Thread> ThreadArr = new ArrayList<>(1);
     //static Thread[] ThreadArr = new Thread[8];
     public static int[] threadnum = {1, 3, 6, 12};
+    static double[] sums=new double[3];
     static double[] sumarray = new double[numthreads];
     static double[] sumarray2 = new double[numthreads];
     static function ff=(x)->(Math.pow(Math.log(x),2)/x); // function interface
     static double a=1, b=4; //integral edges
-    static final int PRECISION=(int)1e8;
-
+    static final int PRECISION=(int)1e9;
+    static Semaphore sem;
     public static double sum1 = 0, sum2 = 0;
     public static void main(String[] args) {
         System.out.println("-----------------------------------");
@@ -97,7 +130,7 @@ public class Main {
             sumarray = new double[numthreads];
             long starttime = System.currentTimeMillis();
             for (int i = 0; i < numthreads; i++) {
-                ThreadArr.add(i, new RectangleMethod(i + 1, PRECISION, a, b, ff));
+                ThreadArr.add(i, new RectangleMethod(i + 1, PRECISION, a, b, ff,sem));
                 //ThreadArr[i].setName("Thread-" + i);
                 (ThreadArr.get(i)).start();
             }
@@ -113,7 +146,7 @@ public class Main {
             long endtime = System.currentTimeMillis();
             double elapsed = endtime - starttime ;
             System.out.println("Время работы: " + elapsed / 1000 + "с., потоков = " + numthreads);
-            System.out.println(sum);
+            System.out.println(sums[0]);
             System.out.println("-----------------------------------");
         }
         System.out.println("-----------------------------------");
@@ -127,7 +160,7 @@ public class Main {
             sumarray = new double[numthreads];
             long starttime = System.currentTimeMillis();
             for (int i = 0; i < numthreads; i++) {
-                ThreadArr.add(i, new TrapezoidMethod(i + 1, PRECISION, a, b, ff));
+                ThreadArr.add(i, new TrapezoidMethod(i + 1, PRECISION, a, b, ff,sem));
                 //ThreadArr[i].setName("Thread-" + i);
                 ThreadArr.get(i).start();
             }
@@ -142,11 +175,11 @@ public class Main {
             }
 
             for (int x = 0; x < sumarray.length; x++) sum += sumarray[x];
-            sum *= (3./PRECISION);
+            sums[1] *= (3./PRECISION);
             long endtime = System.currentTimeMillis();
             double elapsed = endtime - starttime ;
             System.out.println("Время работы: " + elapsed / 1000 + "с.");
-            System.out.println(sum);
+            System.out.println(sums[1]);
             System.out.println("-----------------------------------");
         }
         System.out.println("-----------------------------------");
@@ -165,7 +198,7 @@ public class Main {
             sumarray2 = new double[numthreads];
             long starttime = System.currentTimeMillis();
             for (int i = 0; i < numthreads; i++) {
-                ThreadArr.add(i, new SimpsonMethod(i + 1, PRECISION, a, b, ff));
+                ThreadArr.add(i, new SimpsonMethod(i + 1, PRECISION, a, b, ff,sem));
                 //ThreadArr[i].setName("Thread-" + i);
                 ThreadArr.get(i).start();
             }
@@ -180,11 +213,9 @@ public class Main {
             }
             for (int x = 0; x < sumarray.length; x++) sum1 += sumarray[x];
             for (int x = 0; x < sumarray2.length; x++) sum2 += sumarray2[x];
-            sum += sum1 * 2;
-            sum += sum2 * 4;
-            sum *= (((b-a)/PRECISION) / 3);
+            sums[2] *= (((b-a)/PRECISION) / 3);
             long endtime = System.currentTimeMillis();
-            double elapsed = endtime - starttime ;
+            double elapsed = endtime - starttime;
             System.out.println("Время работы: " + elapsed / 1000 + "с.");
             System.out.println(sum);
             System.out.println("-----------------------------------");
