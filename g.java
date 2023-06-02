@@ -1,3 +1,5 @@
+package com.company;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
@@ -108,14 +110,14 @@ public class Main {
     public static int numthreads = 1;
     static ArrayList<Thread> ThreadArr = new ArrayList<>(1);
     //static Thread[] ThreadArr = new Thread[8];
-    public static int[] threadnum = {1, 3, 6, 12};
+    public static int[] threadnum = {24, 3, 6, 12};
     static double[] sums=new double[3];
     static double[] sumarray = new double[numthreads];
     static double[] sumarray2 = new double[numthreads];
     static function ff=(x)->(Math.pow(Math.log(x),2)/x); // function interface
     static double a=1, b=4; //integral edges
     static final int PRECISION=(int)1e9;
-    static Semaphore sem;
+    static Semaphore sem=new Semaphore(1);
     public static double sum1 = 0, sum2 = 0;
     public static void main(String[] args) {
         System.out.println("-----------------------------------");
@@ -146,7 +148,7 @@ public class Main {
             long endtime = System.currentTimeMillis();
             double elapsed = endtime - starttime ;
             System.out.println("Время работы: " + elapsed / 1000 + "с., потоков = " + numthreads);
-            System.out.println(sums[0]);
+            System.out.println(sums[j]);
             System.out.println("-----------------------------------");
         }
         System.out.println("-----------------------------------");
@@ -179,7 +181,7 @@ public class Main {
             long endtime = System.currentTimeMillis();
             double elapsed = endtime - starttime ;
             System.out.println("Время работы: " + elapsed / 1000 + "с.");
-            System.out.println(sums[1]);
+            System.out.println(sums[j]);
             System.out.println("-----------------------------------");
         }
         System.out.println("-----------------------------------");
@@ -217,7 +219,7 @@ public class Main {
             long endtime = System.currentTimeMillis();
             double elapsed = endtime - starttime;
             System.out.println("Время работы: " + elapsed / 1000 + "с.");
-            System.out.println(sum);
+            System.out.println(sums[j]);
             System.out.println("-----------------------------------");
         }
     }
