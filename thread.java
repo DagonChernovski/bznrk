@@ -1,149 +1,137 @@
-package com.company;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Semaphore;
 
-class JThread extends Thread{
-    /*JThread(String name){
-        super();
-    }*/
-    public void run(){
-        String curThread = Thread.currentThread().getName();
-        long preStart=(long)Math.pow(10, Main.n - 1); //первое
-        long preEnd=(long)(Math.pow(10, Main.n)-Math.pow(10, Main.n - 1));
-        int range=Integer.parseInt(curThread.substring(7));
-        long start = (preStart + preEnd/ Main.numthreads * range),
-                end = (preStart + preEnd/ Main.numthreads * (range+1));
-        if (end>Math.pow(10, Main.n)) end=(long)Math.pow(10, Main.n);
-        System.out.println(curThread+" started... - from "+ start+" "+end);
-        for (long i = start; i < end; i++)
-        {
-            //i перебирается от 10^14
-            long temp = i;
-            boolean flag = true;
-            for (int j = 1; j < Main.n; j++)
-            {
-                long a = temp % 10;
-                long b = temp / 10 % 10;
-                if (Math.abs(a-b)==1 && Math.min(a,b)!=0)
-                    temp = temp / 10;
-                else flag = false;
-            }
-            if (flag) {
-                long d = i % 2;
-                //System.out.println(d + " /" + i);
-                if (d == 0) Main.evencount++;
-                else Main.oddcount++;
-                //System.out.printf("%s %d\n", curThread, i);
-            }
-            //System.out.printf("%d ", i);
-        }
-        //System.out.println(Main.evencount);
-        System.out.println(curThread+" finished...");
-    }
-}
+class ThreadWriter extends Thread {
+    private int index; //First Second Third;
+    private int number;
+    int messageNumbers;
+    Semaphore sem;
+    private static volatile String output = "";
 
-class RunnableThread implements Runnable{
-    private boolean isActive;
-    private int curThread;
-    public RunnableThread(int n) {
-        super();
-        curThread=n;
-        isActive=true;
+    ThreadWriter(int index, String output, Semaphore sem, int charNumbers) {
+        this.messageNumbers = charNumbers;
+        this.sem = sem;
+        this.index = index;
+        this.output = output;
     }
-    public RunnableThread() {
-        super();
-        isActive=true;
-    }
+
+    @Override
     public void run() {
-        curThread= Integer.parseInt(Thread.currentThread().getName());
-        System.out.println(curThread+" started...");
-        long preStart=(long)Math.pow(10, Main.n - 1);
-        long preEnd=(long)(Math.pow(10, Main.n)-Math.pow(10, Main.n - 1));
-        int range=curThread;
-        long start= preStart + preEnd / Main.numthreads * range,
-                end=preStart + preEnd / Main.numthreads * (range+1);
-        if (end>Math.pow(10, Main.n)) end=(long)Math.pow(10, Main.n);
-        System.out.println(curThread+" started... - from "+ start+" "+end);
-        for (long i = start; i < end; i++) {
-            long temp = i;
-            boolean flag = true;
-            for (int j = 1; j < Main.n; j++)
-            {
-                long a = temp % 10;
-                long b = temp / 10 % 10;
-                if (Math.abs(a-b)==1 && Math.min(a,b)!=0)
-                    temp = temp / 10;
-                else flag = false;
-            }
-            if (flag) {
-                long d = i % 2;
-                //System.out.println(i);
-                //System.out.println(d + " /" + i);
-                if (d == 0) Main.evencount++;
-                else Main.oddcount++;
+        for (int j = 0; j < messageNumbers; j++) {
+            try {
+                sem.acquire();
+                File.writer.write(output + "->" + j + '\n');
+                sem.release();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
-       System.out.println(curThread+" finished...");
-        this.disable();isActive=false;
-        //System.out.println(Main.evencount);
-    }
-    public void disable() {
-        isActive=false;
-    }
-    public void jJoin() {
-        System.out.println(curThread+" nJoined...");
-        while (isActive) {};
-        System.out.println(curThread+" joined...");
     }
 }
-
-public class Main {
-    public static long evencount = 0,oddcount = 0;
-    public static int n = 8, numthreads = 6;
-    static Thread[] ThreadArr = new JThread[numthreads];
-    static RunnableThread[] RunnableArr = new RunnableThread[numthreads];
-    //static Thread RunnableA = new Thread(RunnableArr);
-    public static void main(String[] args){
-
-
-        long starttime = System.currentTimeMillis();
-        System.out.println("Main thread started...");
-        //System.out.println(Math.pow(10, n - 1));
-        for (int i = 0; i < numthreads; i++)
-        {
-            ThreadArr[i] = new JThread();
-            ThreadArr[i].start();
-        };
-        for (int i = 0; i < numthreads; i++)
-        {try{ThreadArr[i].join();}catch(Exception e){System.out.println(e);}}
-
-        System.out.println("Main thread finished...");
-        System.out.println("Num of even numbers: " + evencount);
-        System.out.println("Num of odd numbers: " + oddcount);
-        long endtime = System.currentTimeMillis();
-        long elapsed = endtime - starttime;
-        System.out.println("Working time: " + elapsed + "ms.");
-        System.out.println("-----------------------------------");
-        evencount = 0;
-        oddcount = 0;
-        starttime = System.currentTimeMillis();
-        System.out.println("Main thread started...");
-        for (int i = 0; i < numthreads; i++)
-        {
-            RunnableArr[i]=new RunnableThread(i);
-            new Thread(RunnableArr[i], String.valueOf(i)).start();
-        };
-        for (int i = 0; i < numthreads; i++)
-        {
-            try {
-                RunnableArr[i].notify();
-            } catch(Exception e) {System.out.println(e);}
-        }
-        endtime = System.currentTimeMillis();
-        elapsed = endtime - starttime;
-        System.out.println("Main thread finished...");
-        System.out.println("Num of even numbers: " + evencount);
-        System.out.println("Num of odd numbers: " + oddcount);
-        System.out.println("Working time: " + elapsed + "ms.");
-
+class Alphabet extends Thread {
+    private char character;
+    int messageNumbers;
+    SyncState state;
+    private int index;
+    private static volatile String output = "";
+    Alphabet(int index, char output, SyncState state, int charNumbers) {
+        this.messageNumbers = charNumbers;
+        this.state = state;
+        this.index = index;
+        character = output;
     }
 
+    @Override
+    public void run() {
+
+        synchronized (state) {
+            while(state.getState() != index) {
+                try {
+                    state.wait(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int j = 0; j < messageNumbers; j++) {
+                output += character;
+                try {
+                    File.aWriter.write(output + '\n');
+                    File.aWriter.flush();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            state.setState(index +1);
+        }
+    }
+}
+public class Main {
+    private static String[] threadNames =new String[]{"First","Second","Third","Fourth","Fifth","Sixth","Seventh","Eighth","Ninth","Tenth"};
+    public static void main(String[] args) {
+        List<Thread> threads = new ArrayList<>();
+        SyncState state = new SyncState(0);
+        int n = 3;
+        int numberOfMessages = 4;
+        for (int i = 0; i < n; i++) {
+            Alphabet alal = new Alphabet(i, ((char)('A' + i)), state, numberOfMessages);
+            threads.add(alal);
+        }
+
+        for (Thread th : threads) {
+            th.start();
+        }
+        for (Thread th : threads) {
+            try {
+                th.join();
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        System.out.println("Alphabet written");
+        threads.clear();
+        Semaphore sem=new Semaphore(1);
+        for (int i=0; i<n; i++) {
+            threads.add(new ThreadWriter(i,threadNames[i],sem,numberOfMessages));
+            System.out.println(threads.get(i).getName()+" initialized");
+        }
+        for (Thread th : threads) {
+            th.start();
+        }
+        for (Thread th : threads) {
+            try {
+                th.join();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        System.out.println("Threader written");
+        try {
+            File.aWriter.close();
+            File.writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+class SyncState {
+
+    private volatile int state;
+
+    public SyncState(int state) {
+        this.state = state;
+    }
+
+    synchronized public int getState() {
+        return state;
+    }
+
+    synchronized public void setState(int state) {
+        this.state = state;
+    }
 }
